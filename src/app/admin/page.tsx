@@ -336,9 +336,9 @@ export default function AdminDashboardPage() {
                 <tr>
                   <th>Order ID</th>
                   <th>Customer</th>
-                  <th>Escrow Amount</th>
-                  <th>Secret Pickup Key</th>
-                  <th>Escrow Status</th>
+                  <th>Order Amount</th>
+                  <th>Pickup Key</th>
+                  <th>Payment Status</th>
                   <th>Vendor 90% / System 10%</th>
                   <th>Order Status</th>
                 </tr>

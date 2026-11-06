@@ -184,8 +184,8 @@ export default function HomePage() {
               border: "1px solid rgba(255, 255, 255, 0.35)",
             }}
           >
-            <span>🔒</span>
-            <span>{currentTheme.tag} • SAFE ESCROW PROTECTED</span>
+            <span>⭐</span>
+            <span>{currentTheme.tag} • QUALITY PRODUCTS</span>
           </div>
 
           <h1
@@ -295,7 +295,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4-Card Trust & Escrow Guarantee Ribbon */}
+      {/* 4-Card Service Feature Ribbon */}
       <div
         style={{
           display: "grid",
@@ -317,12 +317,12 @@ export default function HomePage() {
           }}
         >
           <div style={{ fontSize: "1.8rem", background: "#eff6ff", width: "46px", height: "46px", borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            🔒
+            🚚
           </div>
           <div>
-            <h4 style={{ fontSize: "0.95rem", fontWeight: 800, color: "var(--primary)" }}>Safe Escrow Hold</h4>
+            <h4 style={{ fontSize: "0.95rem", fontWeight: 800, color: "var(--primary)" }}>Fast Pickup & Delivery</h4>
             <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "2px" }}>
-              Your money is locked safely in escrow until you inspect and accept your item.
+              Convenient shop collection or fast delivery right in your town or estate.
             </p>
           </div>
         </div>
@@ -343,9 +343,9 @@ export default function HomePage() {
             🏪
           </div>
           <div>
-            <h4 style={{ fontSize: "0.95rem", fontWeight: 800, color: "#166534" }}>Verified Local Shops</h4>
+            <h4 style={{ fontSize: "0.95rem", fontWeight: 800, color: "#166534" }}>Neighborhood Shops</h4>
             <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "2px" }}>
-              Registered physical shops in Kenyan towns with real street stalls and permits.
+              Explore physical stalls and local retailers operating across Kenya.
             </p>
           </div>
         </div>
@@ -363,12 +363,12 @@ export default function HomePage() {
           }}
         >
           <div style={{ fontSize: "1.8rem", background: "#fefce8", width: "46px", height: "46px", borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            🔑
+            🛡️
           </div>
           <div>
-            <h4 style={{ fontSize: "0.95rem", fontWeight: 800, color: "#854d0e" }}>Secret Pickup Key</h4>
+            <h4 style={{ fontSize: "0.95rem", fontWeight: 800, color: "#854d0e" }}>Buyer Protection</h4>
             <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "2px" }}>
-              Exact shop address and secret pickup key unlock immediately upon payment.
+              Your money is safe and only released when you receive your order in good condition.
             </p>
           </div>
         </div>
@@ -389,9 +389,9 @@ export default function HomePage() {
             📱
           </div>
           <div>
-            <h4 style={{ fontSize: "0.95rem", fontWeight: 800, color: "#9d174d" }}>Instant M-Pesa Split</h4>
+            <h4 style={{ fontSize: "0.95rem", fontWeight: 800, color: "#9d174d" }}>Easy M-Pesa Payment</h4>
             <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "2px" }}>
-              90% releases to vendor wallet once verified; 10% system service fee remains.
+              Pay easily through Safaricom M-Pesa with instant confirmation.
             </p>
           </div>
         </div>
@@ -442,8 +442,8 @@ export default function HomePage() {
             </div>
             <div style={{ fontSize: "0.82rem", color: "var(--text-muted)", marginTop: "2px" }}>
               {vendorMatches[0]
-                ? `AI matched you with ${vendorMatches[0].vendorName} (${vendorMatches[0].distanceEstimate} • ${vendorMatches[0].matchScore}% proximity score). Exact shop stall unlocks upon payment.`
-                : "AI is intelligently matching you with verified local shops closest to your address."}
+                ? `Closest shop: ${vendorMatches[0].vendorName} (${vendorMatches[0].distanceEstimate} away). Exact address & contact provided upon order.`
+                : "Showing shops closest to your selected location."}
             </div>
           </div>
         </div>
@@ -478,7 +478,7 @@ export default function HomePage() {
             {selectedCategory === "All" ? "Featured Products Near You" : selectedCategory}
           </h2>
           <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
-            Showing {filteredProducts.length} verified products available for instant escrow pickup
+            Showing {filteredProducts.length} products available near your location
           </p>
         </div>
       </div>
@@ -611,13 +611,13 @@ export default function HomePage() {
       >
         <div style={{ textAlign: "center", maxWidth: "600px", margin: "0 auto 2rem" }}>
           <span className="badge badge-dispatched" style={{ marginBottom: "8px" }}>
-            HOW SHOPPING WORKS
+            HOW IT WORKS
           </span>
           <h3 style={{ fontSize: "1.6rem", fontWeight: 800, color: "var(--primary)" }}>
-            Zero-Risk Escrow Handover
+            Simple, Safe Online Shopping
           </h3>
           <p style={{ fontSize: "0.9rem", color: "var(--text-muted)", marginTop: "4px" }}>
-            Your payment never touches the seller until you inspect your item in person and confirm receipt.
+            Shop with confidence from verified neighborhood sellers with 100% buyer protection.
           </p>
         </div>
 
@@ -649,9 +649,9 @@ export default function HomePage() {
             >
               1
             </div>
-            <h4 style={{ fontWeight: 800, fontSize: "1.05rem", marginBottom: "6px" }}>Pay into Safe Escrow</h4>
+            <h4 style={{ fontWeight: 800, fontSize: "1.05rem", marginBottom: "6px" }}>Order Securely</h4>
             <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", lineHeight: 1.5 }}>
-              Pay via Safaricom M-Pesa. Your funds are held securely in the system escrow account.
+              Pay conveniently with Safaricom M-Pesa. Your payment is protected until you receive your items.
             </p>
           </div>
 
@@ -682,9 +682,9 @@ export default function HomePage() {
             >
               2
             </div>
-            <h4 style={{ fontWeight: 800, fontSize: "1.05rem", marginBottom: "6px" }}>Shop & Secret Key Unlock</h4>
+            <h4 style={{ fontWeight: 800, fontSize: "1.05rem", marginBottom: "6px" }}>Pick Up or Delivery</h4>
             <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", lineHeight: 1.5 }}>
-              Payment unlocks the exact stall address, WhatsApp/call contact, and your Secret Pickup Key.
+              Receive your pickup confirmation code, shop address, and vendor contact info.
             </p>
           </div>
 
@@ -715,9 +715,9 @@ export default function HomePage() {
             >
               3
             </div>
-            <h4 style={{ fontWeight: 800, fontSize: "1.05rem", marginBottom: "6px" }}>Inspect & Release 90%</h4>
+            <h4 style={{ fontWeight: 800, fontSize: "1.05rem", marginBottom: "6px" }}>Inspect & Confirm</h4>
             <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", lineHeight: 1.5 }}>
-              Pick up your item, click Accept, and 90% is released to the vendor. System keeps 10% fee.
+              Inspect your items in person and confirm receipt to complete the transaction.
             </p>
           </div>
         </div>

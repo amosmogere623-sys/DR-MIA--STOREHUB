@@ -69,7 +69,7 @@ export default function OrderSuccessPage() {
           Order Confirmed!
         </h1>
         <p style={{ color: "var(--text-muted)", fontSize: "0.92rem", marginBottom: "1.5rem" }}>
-          Your payment is held in the <strong>SokoLink Escrow Vault</strong>. The shop will only receive payment when you give them your Secret Release Key below.
+          Your order is confirmed. Show your pickup code to the shop vendor when collecting your items.
         </p>
 
         {/* Unique Secret Release Key Card */}
@@ -85,7 +85,7 @@ export default function OrderSuccessPage() {
             }}
           >
             <div style={{ fontSize: "0.78rem", textTransform: "uppercase", letterSpacing: "1px", fontWeight: 700, opacity: 0.9 }}>
-              🔑 YOUR SECRET RELEASE KEY (GIVE TO SHOP OWNER)
+              🔑 YOUR PICKUP CONFIRMATION CODE
             </div>
 
             <div
@@ -104,7 +104,7 @@ export default function OrderSuccessPage() {
             </div>
 
             <p style={{ fontSize: "0.85rem", opacity: 0.95, maxWidth: "460px", margin: "0 auto 1rem" }}>
-              Go to the shop address below, inspect your item, and give this key to the seller to complete the handover.
+              Visit the shop address below, inspect your items, and give this code to the seller to collect your order.
             </p>
 
             <button
@@ -120,7 +120,7 @@ export default function OrderSuccessPage() {
                 cursor: "pointer",
               }}
             >
-              {copiedKey ? "✓ Copied Key!" : "📋 Copy Secret Key"}
+              {copiedKey ? "✓ Copied Code!" : "📋 Copy Pickup Code"}
             </button>
           </div>
         )}
@@ -138,13 +138,13 @@ export default function OrderSuccessPage() {
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-              <span style={{ fontSize: "1.3rem" }}>🔓</span>
+              <span style={{ fontSize: "1.3rem" }}>📍</span>
               <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: "var(--primary)", margin: 0 }}>
-                Shop Location & Vendor Contact (Unlocked on Payment)
+                Shop Address & Vendor Contact
               </h3>
             </div>
             <p style={{ fontSize: "0.82rem", color: "var(--text-muted)", marginBottom: "12px" }}>
-              Your payment is safely held in escrow. Visit the stall or call the vendor directly to collect your order:
+              Visit the stall or call the vendor directly to collect your order:
             </p>
 
             {order.unlockedVendorContacts.map((contact, idx) => (
@@ -207,10 +207,10 @@ export default function OrderSuccessPage() {
             }}
           >
             <div style={{ fontSize: "0.95rem", fontWeight: 800, color: "#166534", marginBottom: "6px" }}>
-              Already Picked Up Your Items?
+              Already Received Your Items?
             </div>
             <p style={{ fontSize: "0.82rem", color: "#15803d", marginBottom: "12px" }}>
-              Clicking below verifies that you have received your product in good condition and releases KSh {order.vendorPayoutAmount.toLocaleString()} to the vendor.
+              Clicking below confirms that you have received your products in good condition.
             </p>
             <button
               onClick={handleBuyerRelease}
@@ -223,7 +223,7 @@ export default function OrderSuccessPage() {
                 fontWeight: 800,
               }}
             >
-              ✓ Accept Product & Release Payment
+              ✓ Confirm Order Received
             </button>
           </div>
         )}

@@ -293,7 +293,7 @@ export default function VendorDashboardPage() {
           📦 Orders for Pickup & Handover
         </h2>
         <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "1.25rem" }}>
-          Mark when a customer collects their item, or enter their Secret Pickup Key to unlock your 90% payout instantly.
+          Mark orders as collected, or enter the customer's pickup code to complete the order.
         </p>
 
         {escrowMessage && (
@@ -320,8 +320,8 @@ export default function VendorDashboardPage() {
                 <th>Order</th>
                 <th>Customer</th>
                 <th>Items</th>
-                <th>Your 90% Payout</th>
-                <th>Handover Status</th>
+                <th>Payout</th>
+                <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -385,7 +385,7 @@ export default function VendorDashboardPage() {
         {/* Enter key form */}
         <div style={{ borderTop: "1px dashed #bfdbfe", paddingTop: "1rem" }}>
           <strong style={{ fontSize: "0.88rem", color: "var(--primary)", display: "block", marginBottom: "8px" }}>
-            🔑 Or Enter Customer Secret Key Directly (Instant 90% Unlock):
+            🔑 Enter Customer Pickup Code:
           </strong>
           <form onSubmit={handleVerifyEscrowRelease} className="responsive-grid-3" style={{ alignItems: "flex-end", gap: "10px" }}>
             <div>
@@ -408,10 +408,10 @@ export default function VendorDashboardPage() {
             </div>
 
             <div>
-              <label className="form-label" style={{ fontSize: "0.78rem" }}>Customer Secret Key</label>
+              <label className="form-label" style={{ fontSize: "0.78rem" }}>Customer Pickup Code</label>
               <input
                 type="text"
-                placeholder="e.g. ESC-MIA-849201"
+                placeholder="e.g. ESC-SKL-849201"
                 value={enteredReleaseKey}
                 onChange={(e) => setEnteredReleaseKey(e.target.value)}
                 className="form-input"
@@ -420,7 +420,7 @@ export default function VendorDashboardPage() {
             </div>
 
             <button type="submit" className="btn-primary" style={{ height: "42px", padding: "0 18px", fontSize: "0.85rem" }}>
-              Verify & Unlock 90%
+              Confirm Pickup
             </button>
           </form>
         </div>

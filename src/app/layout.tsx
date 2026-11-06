@@ -47,9 +47,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         <div className="container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <span style={{ background: "rgba(255,255,255,0.2)", padding: "2px 8px", borderRadius: "999px", fontSize: "0.72rem" }}>
-              🔒 ESCROW
+              🇰🇪 KENYA
             </span>
-            <span>Safe shop pickup with Secret Release Key</span>
+            <span>Local shop pickup & delivery across all counties</span>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -129,7 +129,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               <div>
                 SokoLink
                 <span style={{ display: "block", fontSize: "0.68rem", color: "var(--accent)", fontWeight: 800, letterSpacing: "0.5px" }}>
-                  KENYA ESCROW MARKETPLACE
+                  ONLINE MARKETPLACE
                 </span>
               </div>
             </Link>
@@ -366,7 +366,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                     className="btn-primary"
                     style={{ padding: "12px", textAlign: "center", fontSize: "0.95rem" }}
                   >
-                    Checkout (Escrow Protected) &rarr;
+                    Proceed to Checkout &rarr;
                   </Link>
                   <button
                     onClick={() => clearCart()}
@@ -391,7 +391,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 <span>🔗</span> SokoLink
               </div>
               <p style={{ fontSize: "0.88rem", color: "var(--text-muted)", marginTop: "6px", lineHeight: "1.6" }}>
-                Kenya’s verified local escrow marketplace. AI matches you with physical stalls in your town or estate (e.g. Mwembe, Kisii). Pay safely with Escrow and pick up with your secret key.
+                Kenya’s marketplace connecting you with neighborhood shops and local sellers across the country. Easy pickup, fast delivery, and secure payments.
               </p>
             </div>
             
@@ -402,9 +402,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "6px", fontSize: "0.85rem", color: "var(--text-muted)" }}>
                 <Link href="/">Marketplace</Link>
-                <Link href="/buyer/orders">Track My Orders</Link>
+                <Link href="/buyer/orders">My Orders</Link>
                 <button onClick={() => openAuthModal()} style={{ background: "none", border: "none", color: "var(--primary)", textAlign: "left", cursor: "pointer", fontWeight: 700, padding: 0 }}>
-                  Login as Buyer
+                  Login
                 </button>
               </div>
             </div>
@@ -412,17 +412,17 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             {/* Dedicated Portals Section */}
             <div>
               <div style={{ fontWeight: 800, fontSize: "0.9rem", color: "var(--text-main)", marginBottom: "8px" }}>
-                Separate Portals
+                Portals
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "6px", fontSize: "0.85rem" }}>
-                <Link href="/vendor/login" style={{ color: "#166534", fontWeight: 700 }}>
-                  🏪 SokoLink Vendor Portal
+                <Link href="/vendor/login" style={{ color: "#16a34a", fontWeight: 700 }}>
+                  🏪 Vendor Portal
                 </Link>
                 <Link href="/vendor/register" style={{ color: "var(--text-muted)" }}>
-                  + Register Your Physical Shop
+                  + Register Your Shop
                 </Link>
                 <Link href="/admin/login" style={{ color: "#1e40af", fontWeight: 700, marginTop: "4px" }}>
-                  🛡️ Master Admin Gate (Amos Bosire)
+                  🛡️ Admin Portal
                 </Link>
               </div>
             </div>
@@ -445,9 +445,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           >
             <div>&copy; {new Date().getFullYear()} SokoLink Kenya. All rights reserved.</div>
             <div style={{ display: "flex", gap: "14px", fontSize: "0.78rem" }}>
-              <span>🔒 100% Escrow Protected</span>
+              <span>🔒 Secure Payments</span>
               <span>•</span>
-              <span>🤖 AI Proximity Engine</span>
+              <span>🏪 Local Shops</span>
               <span>•</span>
               <span>🇰🇪 Made for Kenya</span>
             </div>
@@ -462,10 +462,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <title>SokoLink | Kenya Verified Escrow Marketplace</title>
+        <title>SokoLink | Online Shopping Marketplace Kenya</title>
         <meta
           name="description"
-          content="SokoLink - Safe Escrow protected shopping from verified local shop stalls across Kenyan counties, towns and estates."
+          content="SokoLink - Online shopping marketplace connecting you with neighborhood shops across Kenyan counties, towns and estates."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>

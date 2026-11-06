@@ -145,7 +145,7 @@ export default function ProductDetailPage() {
               border: "1px solid #bfdbfe",
             }}
           >
-            <div style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>Sold by Verified Local Shop:</div>
+            <div style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>Sold by:</div>
             <div style={{ fontWeight: 800, color: "var(--text-main)", fontSize: "1rem", marginTop: "2px" }}>
               🏪 {product.vendorName}
             </div>
@@ -165,9 +165,9 @@ export default function ProductDetailPage() {
                 gap: "6px",
               }}
             >
-              <span>🔒</span>
+              <span>📍</span>
               <span>
-                <strong>Exact Shop Stall & Phone Number:</strong> Hidden for security. Unlocked instantly once your payment is held safely in escrow.
+                <strong>Exact Stall Address & Phone:</strong> Provided upon placing your order.
               </span>
             </div>
           </div>

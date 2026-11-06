@@ -149,10 +149,10 @@ export default function CheckoutPage() {
     <div className="container" style={{ padding: "2rem 0 4rem" }}>
       <div style={{ marginBottom: "1.5rem" }}>
         <h1 style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--text-main)" }}>
-          Checkout (Escrow Protected)
+          Checkout
         </h1>
         <p style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>
-          Your payment stays safely in Escrow until you pick up your item with your secret key.
+          Confirm your contact details and delivery location to complete your order.
         </p>
       </div>
 
@@ -322,9 +322,9 @@ export default function CheckoutPage() {
                     onChange={() => setPaymentMethod("mpesa")}
                   />
                   <div>
-                    <strong style={{ color: "var(--primary)" }}>📱 Safaricom M-Pesa (Escrow Hold)</strong>
+                    <strong style={{ color: "var(--primary)" }}>📱 Safaricom M-Pesa</strong>
                     <p style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
-                      Funds held safely. Unlocks Secret Release Key & shop directions.
+                      Pay securely with M-Pesa. Pickup confirmation code and shop contact provided on confirmation.
                     </p>
                   </div>
                 </label>

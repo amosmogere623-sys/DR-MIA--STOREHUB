@@ -45,10 +45,10 @@ export default function BuyerOrdersPage() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: "10px" }}>
         <div>
           <h1 style={{ fontSize: "1.85rem", fontWeight: 800, color: "var(--text-main)" }}>
-            My Orders & Release Keys
+            My Orders
           </h1>
           <p style={{ color: "var(--text-muted)", fontSize: "0.88rem" }}>
-            Give your secret release key to the shop only after inspecting and receiving your items.
+            View your order history, pickup confirmation codes, and shop contact details.
           </p>
         </div>
         <Link href="/" className="btn-primary" style={{ padding: "8px 18px", fontSize: "0.88rem" }}>
@@ -58,7 +58,7 @@ export default function BuyerOrdersPage() {
 
       {/* Tabs */}
       <div style={{ display: "flex", gap: "8px", marginBottom: "1.5rem", overflowX: "auto" }}>
-        {["All", "Escrow Active", "Delivered"].map((tab) => (
+        {["All", "Active Orders", "Completed"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -118,7 +118,7 @@ export default function BuyerOrdersPage() {
                       {order.id}
                     </span>
                     <span className={order.escrowStatus === "RELEASED_TO_VENDOR" ? "badge badge-delivered" : "badge badge-dispatched"}>
-                      {order.escrowStatus === "RELEASED_TO_VENDOR" ? "Handover Done" : "🔒 In Escrow"}
+                      {order.escrowStatus === "RELEASED_TO_VENDOR" ? "Completed" : "Ready for Pickup"}
                     </span>
                   </div>
                   <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "2px" }}>
@@ -151,14 +151,14 @@ export default function BuyerOrdersPage() {
                 >
                   <div>
                     <span style={{ fontSize: "0.72rem", textTransform: "uppercase", fontWeight: 700, opacity: 0.9 }}>
-                      🔑 Secret Pickup Release Key:
+                      🔑 Pickup Confirmation Code:
                     </span>
                     <div style={{ fontSize: "1.4rem", fontWeight: 900, fontFamily: "monospace", color: "#fef08a" }}>
                       {order.escrowReleaseKey}
                     </div>
                   </div>
                   <div style={{ fontSize: "0.78rem", opacity: 0.9 }}>
-                    Show to vendor at the shop when collecting.
+                    Show to seller at the shop when collecting.
                   </div>
                 </div>
               )}
