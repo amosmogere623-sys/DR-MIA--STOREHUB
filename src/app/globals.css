@@ -33,10 +33,52 @@
   --font: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6, p, span, a, label, div, button {
+  overflow-wrap: break-word;
+}
+
+.break-word {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.break-all {
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
+/* Responsive Table Wrapper */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Responsive Grid Helper Classes */
+.responsive-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.responsive-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
 }
 
 body {
@@ -529,4 +571,182 @@ button {
   background: #ffffff;
   border-top: 1.5px solid #e2eeff;
   padding: 3.5rem 0 2rem;
+}
+
+/* =========================================================
+   MOBILE RESPONSIVENESS & OVERFLOW PROTECTION
+   ========================================================= */
+
+@media (max-width: 992px) {
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  html, body {
+    font-size: 15px;
+  }
+
+  .container {
+    padding: 0 1rem !important;
+    max-width: 100% !important;
+  }
+
+  .panel {
+    padding: 1.25rem 1rem !important;
+    border-radius: 18px !important;
+    max-width: 100% !important;
+  }
+
+  /* Header & Navigation */
+  .nav-inner {
+    height: auto !important;
+    padding: 10px 0 !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+
+  .brand {
+    font-size: 1.15rem !important;
+    gap: 8px !important;
+  }
+
+  .brand-icon {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 1.2rem !important;
+    border-radius: 10px !important;
+  }
+
+  .nav-links {
+    order: 3 !important;
+    width: 100% !important;
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+    padding: 6px 8px !important;
+    gap: 6px !important;
+    scrollbar-width: none !important;
+  }
+  .nav-links::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .nav-link {
+    padding: 6px 12px !important;
+    font-size: 0.82rem !important;
+    white-space: nowrap !important;
+  }
+
+  .nav-actions {
+    gap: 8px !important;
+  }
+
+  .btn-cart {
+    padding: 8px 14px !important;
+    font-size: 0.82rem !important;
+  }
+
+  /* Product Grid on mobile */
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  .puffy-img-wrap {
+    height: 140px !important;
+    margin: 6px 6px 0 !important;
+  }
+
+  .puffy-body {
+    padding: 10px !important;
+  }
+
+  .puffy-title {
+    font-size: 0.92rem !important;
+    -webkit-line-clamp: 2 !important;
+  }
+
+  .puffy-desc {
+    display: none !important;
+  }
+
+  .puffy-footer {
+    padding-top: 8px !important;
+  }
+
+  .puffy-price {
+    font-size: 1.05rem !important;
+  }
+
+  /* Categories Bar */
+  .categories-bar {
+    padding-bottom: 8px !important;
+    margin-bottom: 1.25rem !important;
+  }
+
+  .cat-btn {
+    padding: 8px 14px !important;
+    font-size: 0.82rem !important;
+  }
+
+  /* Multi-column grid collapses */
+  .responsive-grid-3 {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .responsive-grid-2 {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  /* Forms and Inputs */
+  .form-input, .form-select, .form-textarea {
+    padding: 10px 12px !important;
+    font-size: 0.88rem !important;
+    max-width: 100% !important;
+  }
+
+  /* Headings on mobile */
+  h1 {
+    font-size: 1.65rem !important;
+    line-height: 1.25 !important;
+  }
+
+  h2 {
+    font-size: 1.3rem !important;
+  }
+
+  h3 {
+    font-size: 1.1rem !important;
+  }
+
+  /* Buttons */
+  .btn-primary, .btn-secondary {
+    padding: 9px 16px !important;
+    font-size: 0.85rem !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .responsive-grid-3 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .puffy-pill-badge {
+    font-size: 0.65rem !important;
+    padding: 2px 8px !important;
+  }
+
+  .footer {
+    padding: 2rem 0 1.5rem !important;
+  }
 }

@@ -224,10 +224,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           <div
             style={{
               width: "100%",
-              maxWidth: "400px",
+              maxWidth: "min(400px, 100vw)",
               height: "100%",
               backgroundColor: "white",
-              padding: "1.75rem",
+              padding: "clamp(1rem, 4vw, 1.75rem)",
               display: "flex",
               flexDirection: "column",
               boxShadow: "-8px 0 25px rgba(0,0,0,0.1)",

@@ -240,7 +240,7 @@ export default function AuthModal() {
         </div>
 
         {/* Role selector */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "1.5rem" }}>
+        <div className="responsive-grid-3" style={{ marginBottom: "1.25rem" }}>
           {(["buyer", "vendor", "admin"] as UserRole[]).map((role) => {
             const icons: Record<string, string> = { buyer: "🛍️", vendor: "🏪", admin: "🛡️" };
             const labels: Record<string, string> = { buyer: "Buyer", vendor: "Vendor", admin: "Admin" };
@@ -390,7 +390,7 @@ export default function AuthModal() {
                 className="form-input" placeholder="e.g. 0712 345 678" />
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+            <div className="responsive-grid-2">
               <div className="form-group">
                 <label className="form-label">Password *</label>
                 <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
@@ -454,7 +454,7 @@ export default function AuthModal() {
               <label style={{ fontSize: "0.78rem", fontWeight: 800, color: tabColor, display: "block", marginBottom: "8px" }}>
                 📍 {activeTab === "vendor" ? "Shop Location in Kenya:" : "Your Location in Kenya:"}
               </label>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }}>
+              <div className="responsive-grid-3">
                 <div>
                   <label style={{ fontSize: "0.7rem", fontWeight: 700, display: "block", marginBottom: "2px" }}>County</label>
                   <select value={county} onChange={(e) => setCounty(e.target.value)} className="form-select" style={{ padding: "6px", fontSize: "0.78rem" }}>

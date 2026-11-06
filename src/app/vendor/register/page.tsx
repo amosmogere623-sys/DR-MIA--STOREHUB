@@ -224,7 +224,7 @@ export default function VendorRegisterPage() {
             <label style={{ fontSize: "0.85rem", fontWeight: 800, color: "#166534", display: "block", marginBottom: "8px" }}>
               📍 Physical Shop Location in Kenya:
             </label>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }}>
+            <div className="responsive-grid-3">
               <div>
                 <label style={{ fontSize: "0.72rem", fontWeight: 700, display: "block", marginBottom: "3px" }}>County</label>
                 <select
@@ -293,7 +293,7 @@ export default function VendorRegisterPage() {
             </select>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+          <div className="responsive-grid-2">
             <div className="form-group">
               <label className="form-label">Password *</label>
               <input

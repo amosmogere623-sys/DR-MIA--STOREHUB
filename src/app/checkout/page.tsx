@@ -183,8 +183,8 @@ export default function CheckoutPage() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-            gap: "2rem",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
+            gap: "1.5rem",
           }}
         >
           {/* Left: Form */}
@@ -229,7 +229,7 @@ export default function CheckoutPage() {
                   📍 Choose Your Delivery Location in Kenya:
                 </strong>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }}>
+                <div className="responsive-grid-3">
                   <div>
                     <label style={{ fontSize: "0.72rem", fontWeight: 700, display: "block", marginBottom: "2px" }}>
                       County

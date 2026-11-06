@@ -221,7 +221,7 @@ export default function AdminDashboardPage() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))",
           gap: "1.5rem",
           margin: "2rem 0",
         }}
@@ -508,7 +508,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.25rem", marginBottom: "1.75rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))", gap: "1.25rem", marginBottom: "1.75rem" }}>
             <div style={{ background: "#eff6ff", border: "1.5px solid #bfdbfe", padding: "1.25rem", borderRadius: "18px" }}>
               <div style={{ fontSize: "0.8rem", color: "#1e40af", fontWeight: 800 }}>🤖 AI Proximity Engine</div>
               <div style={{ fontSize: "1.6rem", fontWeight: 900, color: "var(--primary)", marginTop: "4px" }}>Active (99% Accuracy)</div>

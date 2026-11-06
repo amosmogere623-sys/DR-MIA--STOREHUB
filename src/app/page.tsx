@@ -156,7 +156,7 @@ export default function HomePage() {
           minHeight: "420px",
           display: "flex",
           alignItems: "center",
-          padding: "3.5rem 2.5rem",
+          padding: "clamp(2rem, 5vw, 3.5rem) clamp(1.25rem, 4vw, 2.5rem)",
           boxShadow: "0 20px 45px -10px rgba(30, 58, 138, 0.28)",
           backgroundImage: `linear-gradient(135deg, rgba(10, 25, 60, 0.88) 0%, rgba(30, 58, 138, 0.82) 100%), url('${currentTheme.bg}')`,
           backgroundSize: "cover",
@@ -190,7 +190,7 @@ export default function HomePage() {
 
           <h1
             style={{
-              fontSize: "3rem",
+              fontSize: "clamp(1.75rem, 5.5vw, 3rem)",
               fontWeight: 900,
               lineHeight: 1.15,
               letterSpacing: "-1px",
@@ -299,7 +299,7 @@ export default function HomePage() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
           gap: "1.25rem",
           margin: "0 0 2rem",
         }}
@@ -621,7 +621,7 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1.5rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))", gap: "1.25rem" }}>
           <div
             style={{
               background: "#ffffff",

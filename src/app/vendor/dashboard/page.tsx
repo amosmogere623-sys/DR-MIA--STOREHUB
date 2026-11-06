@@ -190,7 +190,7 @@ export default function VendorDashboardPage() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 180px), 1fr))",
           gap: "1.25rem",
           margin: "1.5rem 0",
         }}
@@ -337,7 +337,7 @@ export default function VendorDashboardPage() {
           <strong style={{ fontSize: "0.88rem", color: "var(--primary)", display: "block", marginBottom: "8px" }}>
             🔑 Or Enter Customer Secret Key Directly (Instant 90% Unlock):
           </strong>
-          <form onSubmit={handleVerifyEscrowRelease} style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: "10px", alignItems: "flex-end" }}>
+          <form onSubmit={handleVerifyEscrowRelease} className="responsive-grid-3" style={{ alignItems: "flex-end", gap: "10px" }}>
             <div>
               <label className="form-label" style={{ fontSize: "0.78rem" }}>Select Order</label>
               <select

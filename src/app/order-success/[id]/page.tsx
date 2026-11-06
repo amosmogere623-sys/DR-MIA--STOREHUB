@@ -89,13 +89,15 @@ export default function OrderSuccessPage() {
             </div>
 
             <div
+              className="break-all"
               style={{
-                fontSize: "2.2rem",
+                fontSize: "clamp(1.35rem, 6vw, 2.2rem)",
                 fontWeight: 900,
-                letterSpacing: "3px",
+                letterSpacing: "2px",
                 margin: "8px 0",
                 fontFamily: "monospace",
                 color: "#fef08a",
+                wordBreak: "break-all",
               }}
             >
               {order.escrowReleaseKey}
