@@ -125,20 +125,21 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         <div className="container">
           <div className="nav-inner">
             <Link href="/" className="brand">
-              <div className="brand-icon">🏬</div>
+              <div className="brand-icon">🔗</div>
               <div>
-                Dr. Mia Store
-                <span style={{ display: "block", fontSize: "0.68rem", color: "var(--accent)", fontWeight: 700 }}>
-                  ONLINE SHOPPING
+                SokoLink
+                <span style={{ display: "block", fontSize: "0.68rem", color: "var(--accent)", fontWeight: 800, letterSpacing: "0.5px" }}>
+                  KENYA ESCROW MARKETPLACE
                 </span>
               </div>
             </Link>
 
+            {/* Role-Specific Navigation (Buyer, Vendor, and Admin strictly separated) */}
             <nav>
               <ul className="nav-links">
                 <li>
                   <Link href="/" className={`nav-link ${pathname === "/" ? "active" : ""}`}>
-                    Shop
+                    Marketplace
                   </Link>
                 </li>
                 <li>
@@ -149,22 +150,32 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                     My Orders
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    href="/vendor/dashboard"
-                    className={`nav-link ${pathname.startsWith("/vendor") ? "active" : ""}`}
-                  >
-                    Vendor
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/admin"
-                    className={`nav-link ${pathname.startsWith("/admin") ? "active" : ""}`}
-                  >
-                    Admin
-                  </Link>
-                </li>
+
+                {/* Vendor link: ONLY visible when logged in as a Vendor */}
+                {currentUser?.role === "vendor" && (
+                  <li>
+                    <Link
+                      href="/vendor/dashboard"
+                      className={`nav-link ${pathname.startsWith("/vendor") ? "active" : ""}`}
+                      style={{ background: "#f0fdf4", color: "#166534", border: "1px solid #bbf7d0" }}
+                    >
+                      🏪 My Stall Dashboard
+                    </Link>
+                  </li>
+                )}
+
+                {/* Admin link: ONLY visible when logged in as Admin (Amos Bosire) */}
+                {currentUser?.role === "admin" && (
+                  <li>
+                    <Link
+                      href="/admin"
+                      className={`nav-link ${pathname.startsWith("/admin") ? "active" : ""}`}
+                      style={{ background: "#eff6ff", color: "#1e40af", border: "1px solid #bfdbfe" }}
+                    >
+                      🛡️ Admin Console (Amos)
+                    </Link>
+                  </li>
+                )}
               </ul>
             </nav>
 
@@ -174,7 +185,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 className="btn-secondary"
                 style={{ padding: "8px 14px", fontSize: "0.82rem" }}
               >
-                👤 {currentUser ? currentUser.role.toUpperCase() : "Sign In"}
+                👤 {currentUser ? `${currentUser.role.toUpperCase()}: ${currentUser.name.split(" ")[0]}` : "Login as"}
               </button>
 
               <button
@@ -374,33 +385,72 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       {/* Footer */}
       <footer className="footer">
         <div className="container">
-          <div className="footer-inner">
-            <div>
-              <div style={{ fontWeight: 800, fontSize: "1.15rem", color: "var(--primary)" }}>
-                Dr. Mia Store
+          <div className="footer-inner" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "2rem" }}>
+            <div style={{ maxWidth: "420px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", fontWeight: 900, fontSize: "1.3rem", color: "var(--primary)" }}>
+                <span>🔗</span> SokoLink
               </div>
-              <p style={{ fontSize: "0.85rem", marginTop: "4px" }}>
-                Buy from verified local shops in Kisii (Mwembe, Milimani) and across Kenya with Escrow protection.
+              <p style={{ fontSize: "0.88rem", color: "var(--text-muted)", marginTop: "6px", lineHeight: "1.6" }}>
+                Kenya’s verified local escrow marketplace. AI matches you with physical stalls in your town or estate (e.g. Mwembe, Kisii). Pay safely with Escrow and pick up with your secret key.
               </p>
             </div>
-            <div style={{ display: "flex", gap: "1.5rem", fontSize: "0.88rem", fontWeight: 600 }}>
-              <Link href="/">Shop</Link>
-              <Link href="/buyer/orders">Orders</Link>
-              <Link href="/vendor/dashboard">Vendor</Link>
-              <Link href="/admin">Admin</Link>
+            
+            {/* Buyer Links */}
+            <div>
+              <div style={{ fontWeight: 800, fontSize: "0.9rem", color: "var(--text-main)", marginBottom: "8px" }}>
+                Buyer Center
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px", fontSize: "0.85rem", color: "var(--text-muted)" }}>
+                <Link href="/">Marketplace</Link>
+                <Link href="/buyer/orders">Track My Orders</Link>
+                <button onClick={() => openAuthModal()} style={{ background: "none", border: "none", color: "var(--primary)", textAlign: "left", cursor: "pointer", fontWeight: 700, padding: 0 }}>
+                  Login as Buyer
+                </button>
+              </div>
+            </div>
+
+            {/* Dedicated Portals Section */}
+            <div>
+              <div style={{ fontWeight: 800, fontSize: "0.9rem", color: "var(--text-main)", marginBottom: "8px" }}>
+                Separate Portals
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px", fontSize: "0.85rem" }}>
+                <Link href="/vendor/login" style={{ color: "#166534", fontWeight: 700 }}>
+                  🏪 SokoLink Vendor Portal
+                </Link>
+                <Link href="/vendor/register" style={{ color: "var(--text-muted)" }}>
+                  + Register Your Physical Shop
+                </Link>
+                <Link href="/admin/login" style={{ color: "#1e40af", fontWeight: 700, marginTop: "4px" }}>
+                  🛡️ Master Admin Gate (Amos Bosire)
+                </Link>
+              </div>
             </div>
           </div>
+
           <div
             style={{
-              marginTop: "1.5rem",
+              marginTop: "2rem",
               textAlign: "center",
-              fontSize: "0.78rem",
+              fontSize: "0.8rem",
               borderTop: "1px solid var(--border)",
-              paddingTop: "1rem",
+              paddingTop: "1.25rem",
               color: "var(--text-muted)",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "8px",
             }}
           >
-            &copy; {new Date().getFullYear()} Dr. Mia Store. All rights reserved.
+            <div>&copy; {new Date().getFullYear()} SokoLink Kenya. All rights reserved.</div>
+            <div style={{ display: "flex", gap: "14px", fontSize: "0.78rem" }}>
+              <span>🔒 100% Escrow Protected</span>
+              <span>•</span>
+              <span>🤖 AI Proximity Engine</span>
+              <span>•</span>
+              <span>🇰🇪 Made for Kenya</span>
+            </div>
           </div>
         </div>
       </footer>
@@ -412,10 +462,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <title>Dr. Mia Store | Safe Online Shopping</title>
+        <title>SokoLink | Kenya Verified Escrow Marketplace</title>
         <meta
           name="description"
-          content="Dr. Mia Store - Safe Escrow protected shopping from local shops in Kenya."
+          content="SokoLink - Safe Escrow protected shopping from verified local shop stalls across Kenyan counties, towns and estates."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>

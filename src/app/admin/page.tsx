@@ -116,18 +116,18 @@ export default function AdminDashboardPage() {
   if (!isAuthorized) {
     return (
       <div className="container" style={{ padding: "5rem 0", maxWidth: "480px" }}>
-        <div className="panel" style={{ textAlign: "center", padding: "3rem 2rem", border: "3px solid #2563eb" }}>
-          <div style={{ fontSize: "3.5rem", marginBottom: "1rem" }}>👤</div>
-          <h1 style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--text-main)" }}>
-            Dr. Mia Admin Console
+        <div className="panel" style={{ textAlign: "center", padding: "3rem 2rem", border: "3px solid #1e40af", borderRadius: "26px", boxShadow: "0 25px 60px rgba(30,58,138,0.25)" }}>
+          <div style={{ fontSize: "3.5rem", marginBottom: "1rem" }}>🛡️</div>
+          <h1 style={{ fontSize: "1.75rem", fontWeight: 900, color: "var(--text-main)" }}>
+            SokoLink Admin Gateway
           </h1>
-          <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", marginTop: "6px", marginBottom: "2rem" }}>
-            Reserved for platform owner (Amos Bosire). Enter your master password to view escrow custody, inventory in/out, and withdraw service commissions.
+          <p style={{ color: "var(--text-muted)", fontSize: "0.88rem", marginTop: "6px", marginBottom: "2rem" }}>
+            Restricted Master Access (Platform Owner Only: Amos Bosire). Enter your master passkey to access escrow custody, inventory in/out, and 10% fee M-Pesa cashout.
           </p>
 
           <form onSubmit={handleAdminAuth}>
             <div className="form-group" style={{ textAlign: "left" }}>
-              <label className="form-label">Master Password (Demo: amo123)</label>
+              <label className="form-label">Master Passkey (Demo: amo123)</label>
               <input
                 type="password"
                 required
@@ -137,14 +137,14 @@ export default function AdminDashboardPage() {
                 className="form-input"
               />
             </div>
-            <button type="submit" className="btn-primary" style={{ width: "100%", padding: "14px" }}>
-              Unlock Admin Console
+            <button type="submit" className="btn-primary" style={{ width: "100%", padding: "14px", background: "#1e40af" }}>
+              Unlock Master Admin Console
             </button>
           </form>
 
           <div style={{ marginTop: "1.5rem" }}>
             <Link href="/" style={{ color: "var(--primary)", fontSize: "0.85rem", fontWeight: 700 }}>
-              &larr; Return to Marketplace
+              &larr; Return to SokoLink Marketplace
             </Link>
           </div>
         </div>
@@ -163,20 +163,20 @@ export default function AdminDashboardPage() {
           alignItems: "center",
           flexWrap: "wrap",
           gap: "1.5rem",
-          background: "linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)",
+          background: "linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%)",
           color: "white",
           border: "3px solid #93c5fd",
         }}
       >
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <span style={{ fontSize: "2rem" }}>👔</span>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <span style={{ fontSize: "2.2rem" }}>🛡️</span>
             <div>
               <h1 style={{ fontSize: "1.85rem", fontWeight: 900, letterSpacing: "-0.5px" }}>
-                Dr. Mia Platform Manager — Amos Bosire
+                SokoLink Master Admin Console — Amos Bosire
               </h1>
               <p style={{ fontSize: "0.88rem", opacity: 0.9 }}>
-                Direct Control: All Payments to Escrow • Product Inventory In/Out • 10% Service Fee M-Pesa Cashout
+                Direct Platform Owner Control: Escrow Custody • Product Inventory In/Out • AI Telemetry • 10% Fee M-Pesa Cashout
               </p>
             </div>
           </div>

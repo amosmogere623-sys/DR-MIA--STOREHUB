@@ -69,7 +69,7 @@ export default function OrderSuccessPage() {
           Order Confirmed!
         </h1>
         <p style={{ color: "var(--text-muted)", fontSize: "0.92rem", marginBottom: "1.5rem" }}>
-          Your payment is held in the <strong>Dr. Mia Escrow Vault</strong>. The shop will only receive payment when you give them your Secret Release Key below.
+          Your payment is held in the <strong>SokoLink Escrow Vault</strong>. The shop will only receive payment when you give them your Secret Release Key below.
         </p>
 
         {/* Unique Secret Release Key Card */}

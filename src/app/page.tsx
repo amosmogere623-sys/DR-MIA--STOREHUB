@@ -198,7 +198,7 @@ export default function HomePage() {
               textShadow: "0 2px 10px rgba(0,0,0,0.25)",
             }}
           >
-            {selectedCategory === "All" ? "Dr. Mia Store" : selectedCategory}
+            {selectedCategory === "All" ? "SokoLink Marketplace" : selectedCategory}
           </h1>
 
           <p

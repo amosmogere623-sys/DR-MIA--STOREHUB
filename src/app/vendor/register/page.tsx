@@ -13,7 +13,7 @@ export default function VendorRegisterPage() {
   const [stallNumber, setStallNumber] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [category, setCategory] = useState("Puffy Bags & Totes");
+  const [category, setCategory] = useState("Bags & Totes");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -55,12 +55,12 @@ export default function VendorRegisterPage() {
     <div className="container" style={{ padding: "4rem 0 5rem", maxWidth: "560px" }}>
       <div className="panel" style={{ padding: "3rem 2.5rem" }}>
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-          <div style={{ fontSize: "3rem", marginBottom: "8px" }}>☁️</div>
+          <div style={{ fontSize: "3rem", marginBottom: "8px" }}>🏪</div>
           <h1 style={{ fontSize: "1.85rem", fontWeight: 800, color: "var(--text-main)" }}>
-            Studio Registration
+            Vendor Registration
           </h1>
           <p style={{ color: "var(--text-muted)", fontSize: "0.92rem", marginTop: "4px" }}>
-            Join <strong>Dr. Mia Store</strong> as an artisan or comfort brand partner.
+            Join <strong>SokoLink</strong> as a verified vendor partner.
           </p>
         </div>
 
@@ -70,7 +70,7 @@ export default function VendorRegisterPage() {
             <input
               type="text"
               required
-              placeholder="e.g. Mia Kimani"
+              placeholder="e.g. John Mwangi"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="form-input"
@@ -78,11 +78,11 @@ export default function VendorRegisterPage() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Studio / Brand Name *</label>
+            <label className="form-label">Shop Name / Business Name *</label>
             <input
               type="text"
               required
-              placeholder="e.g. Dr. Mia Studio"
+              placeholder="e.g. Kimani Hardware - Kisii Town"
               value={businessName}
               onChange={(e) => setBusinessName(e.target.value)}
               className="form-input"
@@ -90,11 +90,11 @@ export default function VendorRegisterPage() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Studio Location / Suite *</label>
+            <label className="form-label">Shop Stall / Location *</label>
             <input
               type="text"
               required
-              placeholder="e.g. Suite 3A, Westlands, Nairobi"
+              placeholder="e.g. Shop 7, Mwembe Market"
               value={stallNumber}
               onChange={(e) => setStallNumber(e.target.value)}
               className="form-input"
@@ -117,7 +117,7 @@ export default function VendorRegisterPage() {
             <label className="form-label">Studio Email</label>
             <input
               type="email"
-              placeholder="e.g. studio@drmia.store"
+              placeholder="e.g. john@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="form-input"
@@ -125,17 +125,20 @@ export default function VendorRegisterPage() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Primary Collection Category</label>
+            <label className="form-label">Product Category</label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               className="form-select"
             >
-              <option value="Puffy Bags & Totes">Puffy Bags & Totes</option>
-              <option value="Cloud Pillows & Living">Cloud Pillows & Living</option>
-              <option value="Plushies & Toys">Plushies & Toys</option>
-              <option value="Care & Wellness">Care & Wellness</option>
-              <option value="Soft Wear">Soft Wear</option>
+              <option value="Bags & Totes">Bags &amp; Totes</option>
+              <option value="Pillows & Bedding">Pillows &amp; Bedding</option>
+              <option value="Plushies & Toys">Plushies &amp; Toys</option>
+              <option value="Care & Beauty">Care &amp; Beauty</option>
+              <option value="Shoes & Clothes">Shoes &amp; Clothes</option>
+              <option value="Food & Groceries">Food &amp; Groceries</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Hardware & Tools">Hardware &amp; Tools</option>
             </select>
           </div>
 
@@ -157,7 +160,7 @@ export default function VendorRegisterPage() {
             className="btn-primary"
             style={{ width: "100%", padding: "14px", marginTop: "1rem", fontSize: "1.05rem" }}
           >
-            {isSubmitting ? "Onboarding Studio..." : "Register Studio & Enter Hub"}
+            {isSubmitting ? "Registering..." : "Register as Vendor →"}
           </button>
         </form>
 
