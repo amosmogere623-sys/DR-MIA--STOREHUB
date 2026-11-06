@@ -6,54 +6,94 @@ import { useAuth } from "../context/AuthContext";
 import { KENYA_COUNTIES_DATA, getTownsByCounty, getEstatesByTown } from "../lib/locations";
 import { UserRole, KenyaLocation, UserProfile } from "../types";
 
+// ── Helpers for user account storage ──────────────────────────────────────
+function getRegisteredUsers(): Record<string, { profile: UserProfile; password: string; vendorData?: object }> {
+  try {
+    return JSON.parse(localStorage.getItem("sokolink_users") || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function saveRegisteredUser(email: string, password: string, profile: UserProfile, vendorData?: object) {
+  const users = getRegisteredUsers();
+  users[email.toLowerCase()] = { profile, password, vendorData };
+  localStorage.setItem("sokolink_users", JSON.stringify(users));
+}
+
+function findUser(email: string, password: string) {
+  const users = getRegisteredUsers();
+  const record = users[email.toLowerCase()];
+  if (record && record.password === password) return record;
+  return null;
+}
+
 export default function AuthModal() {
   const router = useRouter();
   const { isAuthModalOpen, closeAuthModal, loginAs } = useAuth();
 
   const [activeTab, setActiveTab] = useState<UserRole>("buyer");
+  const [mode, setMode] = useState<"login" | "register">("login");
+
+  // Shared fields
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
-  // Vendor fields
+  // Vendor-only fields
   const [businessName, setBusinessName] = useState("");
   const [stallNumber, setStallNumber] = useState("");
   const [businessReg, setBusinessReg] = useState("");
+  const [vendorCategory, setVendorCategory] = useState("Bags & Totes");
 
-  // Location selector
+  // Location
   const [county, setCounty] = useState("Kisii");
   const [town, setTown] = useState("Kisii Town");
   const [estate, setEstate] = useState("Mwembe");
-
   const [availableTowns, setAvailableTowns] = useState<string[]>([]);
   const [availableEstates, setAvailableEstates] = useState<string[]>([]);
 
   useEffect(() => {
     const towns = getTownsByCounty(county);
     setAvailableTowns(towns);
-    if (towns.length > 0 && !towns.includes(town)) {
-      setTown(towns[0]);
-    }
+    if (towns.length > 0 && !towns.includes(town)) setTown(towns[0]);
   }, [county]);
 
   useEffect(() => {
     const estates = getEstatesByTown(county, town);
     setAvailableEstates(estates);
-    if (estates.length > 0 && !estates.includes(estate)) {
-      setEstate(estates[0]);
-    }
+    if (estates.length > 0 && !estates.includes(estate)) setEstate(estates[0]);
   }, [county, town]);
+
+  // Reset form when tab or mode changes
+  useEffect(() => {
+    setErrorMsg("");
+    setEmail(""); setPassword(""); setConfirmPassword("");
+    setName(""); setPhone(""); setBusinessName(""); setStallNumber(""); setBusinessReg("");
+  }, [activeTab, mode]);
 
   if (!isAuthModalOpen) return null;
 
-  // Single-Click Fast Demo Logins
-  const handleQuickDemo = (role: UserRole) => {
-    if (role === "admin") {
+  // ── LOGIN ────────────────────────────────────────────────────────────────
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMsg("");
+
+    // Admin — credentials checked silently, never exposed
+    if ((activeTab as string) === "admin") {
+      const validEmail = email.trim().toLowerCase() === "amosbosire@gmail.com";
+      const validPass = password === "amo123";
+      if (!validEmail || !validPass) {
+        setErrorMsg("Wrong email or password.");
+        return;
+      }
       localStorage.setItem("admin_auth", "true");
       loginAs({
         id: "admin-amos",
-        name: "Amos Bosire (Platform Owner)",
+        name: "Amos Bosire",
         email: "amosbosire@gmail.com",
         phone: "0711 000 999",
         role: "admin",
@@ -62,149 +102,100 @@ export default function AuthModal() {
       });
       closeAuthModal();
       router.push("/admin");
-    } else if (role === "vendor") {
-      const vLoc = { county: "Kisii", town: "Kisii Town", estate: "Mwembe" };
-      localStorage.setItem(
-        "current_vendor",
-        JSON.stringify({
-          id: "v-vender44",
-          name: "SokoLink Vendor",
-          businessName: "SokoLink Store - Mwembe Branch",
-          stallNumber: "Shop 14, Mwembe Plaza",
-          phone: "0712 998 877",
-          email: "vender44@gmail.com",
-          category: "Bags, Clothes & Living",
-          location: vLoc,
-          businessRegistrationNumber: "BN-KS-2024-90214",
-          verificationStatus: "Verified",
-          walletBalance: 8500,
-          tokenBalance: 80,
-          mpesaNumber: "0712998877",
-          status: "Approved",
-          joinedDate: "2026-02-14",
-        })
-      );
-      loginAs({
-        id: "v-vender44",
-        name: "SokoLink Vendor",
-        email: "vender44@gmail.com",
-        phone: "0712 998 877",
-        role: "vendor",
-        location: vLoc,
-        createdAt: "2026-02-14",
-      });
-      closeAuthModal();
-      router.push("/vendor/dashboard");
-    } else {
-      loginAs({
-        id: "user-buyer23",
-        name: "Buyer Account",
-        email: "buyer23@gmail.com",
-        phone: "0722 334 455",
-        role: "buyer",
-        location: { county: "Kisii", town: "Kisii Town", estate: "Mwembe" },
-        createdAt: "2026-11-01",
-      });
-      closeAuthModal();
-      router.push("/");
-    }
-  };
-
-  const handleLoginSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if ((activeTab as string) === "admin") {
-      if ((email === "amosbosire@gmail.com" || email === "admin@sokolink.co.ke") && (password === "amo123" || password === "admin123")) {
-        handleQuickDemo("admin");
-        return;
-      }
-      if (password === "amo123" || password === "admin123") {
-        handleQuickDemo("admin");
-        return;
-      }
-      alert("Invalid Admin credentials. Use email: amosbosire@gmail.com and password: amo123");
       return;
     }
 
+    // Buyer / Vendor — look up stored account
+    const record = findUser(email.trim(), password);
+    if (!record) {
+      setErrorMsg("No account found with that email and password.");
+      return;
+    }
+    if (record.profile.role !== activeTab) {
+      setErrorMsg(`This account is registered as a ${record.profile.role}, not a ${activeTab}.`);
+      return;
+    }
+    if (activeTab === "vendor" && record.vendorData) {
+      localStorage.setItem("current_vendor", JSON.stringify(record.vendorData));
+    }
+    loginAs(record.profile);
+    closeAuthModal();
+    router.push(activeTab === "vendor" ? "/vendor/dashboard" : "/");
+  };
+
+  // ── REGISTER ─────────────────────────────────────────────────────────────
+  const handleRegister = (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMsg("");
+
+    if (!name.trim()) { setErrorMsg("Please enter your full name."); return; }
+    if (!email.trim()) { setErrorMsg("Please enter your email."); return; }
+    if (password.length < 6) { setErrorMsg("Password must be at least 6 characters."); return; }
+    if (password !== confirmPassword) { setErrorMsg("Passwords do not match."); return; }
+
+    const existing = getRegisteredUsers()[email.trim().toLowerCase()];
+    if (existing) { setErrorMsg("An account already exists with this email. Please log in."); return; }
+
     if (activeTab === "vendor") {
-      if (email === "vender44@gmail.com" && password === "vendoe33!") {
-        handleQuickDemo("vendor");
-        return;
-      }
+      if (!businessName.trim()) { setErrorMsg("Please enter your shop name."); return; }
+      if (!stallNumber.trim()) { setErrorMsg("Please enter your stall/shop location."); return; }
     }
 
-    if (activeTab === "buyer") {
-      if (email === "buyer23@gmail.com" && password === "buy123!@1") {
-        handleQuickDemo("buyer");
-        return;
-      }
-    }
-
-    // Custom login
-    const newLoc: KenyaLocation = { county, town, estate };
+    const loc: KenyaLocation = { county, town, estate };
     const profile: UserProfile = {
       id: `${activeTab}-${Date.now()}`,
-      name: name || (activeTab === "vendor" ? businessName : "Customer"),
-      email: email || `${activeTab}@sokolink.co.ke`,
-      phone: phone || "0712 345 678",
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      phone: phone.trim() || "—",
       role: activeTab,
-      location: newLoc,
+      location: loc,
       createdAt: new Date().toISOString().split("T")[0],
     };
 
+    let vendorData: object | undefined;
     if (activeTab === "vendor") {
-      localStorage.setItem(
-        "current_vendor",
-        JSON.stringify({
-          id: profile.id,
-          name: profile.name,
-          businessName: businessName || profile.name,
-          stallNumber: stallNumber || `Shop in ${estate}`,
-          phone: profile.phone,
-          email: profile.email,
-          category: "Bags, Clothes & Living",
-          location: newLoc,
-          businessRegistrationNumber: businessReg || "BN-REG-1029",
-          verificationStatus: "Verified",
-          walletBalance: 0,
-          tokenBalance: 40,
-          mpesaNumber: profile.phone,
-          status: "Approved",
-          joinedDate: new Date().toISOString().split("T")[0],
-        })
-      );
-      loginAs(profile);
-      closeAuthModal();
-      router.push("/vendor/dashboard");
-      return;
+      vendorData = {
+        id: profile.id,
+        name: profile.name,
+        businessName: businessName.trim(),
+        stallNumber: stallNumber.trim(),
+        phone: profile.phone,
+        email: profile.email,
+        category: vendorCategory,
+        location: loc,
+        businessRegistrationNumber: businessReg.trim() || `BN-REG-${Date.now()}`,
+        verificationStatus: "Pending",
+        walletBalance: 0,
+        tokenBalance: 10,
+        mpesaNumber: phone.trim(),
+        status: "Pending",
+        joinedDate: profile.createdAt,
+      };
+      localStorage.setItem("current_vendor", JSON.stringify(vendorData));
     }
 
-    if ((activeTab as string) === "admin") {
-      loginAs(profile);
-      closeAuthModal();
-      router.push("/admin");
-      return;
-    }
-
+    saveRegisteredUser(email.trim(), password, profile, vendorData);
     loginAs(profile);
     closeAuthModal();
-    router.push("/");
+    router.push(activeTab === "vendor" ? "/vendor/dashboard" : "/");
   };
+
+  // ── STYLES ───────────────────────────────────────────────────────────────
+  const tabColor = activeTab === "admin" ? "#1e3a8a" : activeTab === "vendor" ? "#16a34a" : "#2563eb";
+  const tabBg = activeTab === "admin"
+    ? "linear-gradient(135deg,#0f172a,#1e40af)"
+    : activeTab === "vendor"
+    ? "linear-gradient(135deg,#f0fdf4,#dcfce7)"
+    : "linear-gradient(135deg,#eff6ff,#dbeafe)";
 
   return (
     <div
       style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(15, 23, 42, 0.65)",
+        position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+        backgroundColor: "rgba(15,23,42,0.65)",
         backdropFilter: "blur(6px)",
         zIndex: 200,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        display: "flex", alignItems: "center", justifyContent: "center",
         padding: "1rem",
       }}
       onClick={closeAuthModal}
@@ -212,381 +203,300 @@ export default function AuthModal() {
       <div
         className="panel"
         style={{
-          maxWidth: "540px",
-          width: "100%",
-          maxHeight: "92vh",
-          overflowY: "auto",
+          maxWidth: "520px", width: "100%",
+          maxHeight: "92vh", overflowY: "auto",
           padding: "2rem",
           background: "white",
           borderRadius: "26px",
-          border: "2px solid #bfdbfe",
-          boxShadow: "0 25px 60px rgba(15, 23, 42, 0.3)",
+          border: `2px solid ${tabColor}30`,
+          boxShadow: "0 25px 60px rgba(15,23,42,0.3)",
         }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.25rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.5rem" }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <span style={{ fontSize: "1.6rem" }}>🔗</span>
-              <h2 style={{ fontSize: "1.45rem", fontWeight: 900, color: "var(--primary)", letterSpacing: "-0.5px" }}>
+              <h2 style={{ fontSize: "1.45rem", fontWeight: 900, color: tabColor, letterSpacing: "-0.5px" }}>
                 SokoLink
               </h2>
             </div>
-            <p style={{ fontSize: "0.95rem", color: "var(--text-main)", fontWeight: 800, marginTop: "4px" }}>
-              Login as:
+            <p style={{ fontSize: "0.88rem", color: "var(--text-muted)", marginTop: "2px" }}>
+              Kenya Verified Escrow Marketplace
             </p>
           </div>
           <button
             onClick={closeAuthModal}
             style={{
-              background: "#eff6ff",
-              border: "1px solid #bfdbfe",
-              borderRadius: "50%",
-              width: "34px",
-              height: "34px",
-              fontSize: "1.3rem",
-              cursor: "pointer",
-              color: "var(--primary)",
-              fontWeight: 800,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              background: "#f1f5f9", border: "none", borderRadius: "50%",
+              width: "34px", height: "34px", fontSize: "1.2rem",
+              cursor: "pointer", color: "#64748b", fontWeight: 800,
+              display: "flex", alignItems: "center", justifyContent: "center",
             }}
           >
             &times;
           </button>
         </div>
 
-        {/* 3 Prominent "Login as" Selection Cards */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gap: "10px",
-            marginBottom: "1.5rem",
-          }}
-        >
-          {/* 1. Buyer */}
-          <button
-            type="button"
-            onClick={() => setActiveTab("buyer")}
-            style={{
-              padding: "12px 8px",
-              borderRadius: "18px",
-              border: `2px solid ${activeTab === "buyer" ? "var(--primary)" : "#e2eeff"}`,
-              background: activeTab === "buyer" ? "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)" : "#ffffff",
-              cursor: "pointer",
-              textAlign: "center",
-              transition: "all 0.2s ease",
-              boxShadow: activeTab === "buyer" ? "0 8px 18px rgba(37, 99, 235, 0.18)" : "none",
-            }}
-          >
-            <div style={{ fontSize: "1.6rem", marginBottom: "4px" }}>🛍️</div>
-            <strong style={{ fontSize: "0.85rem", color: activeTab === "buyer" ? "var(--primary)" : "var(--text-main)", display: "block" }}>
-              Buyer
-            </strong>
-            <span style={{ fontSize: "0.68rem", color: "var(--text-muted)" }}>
-              Shop & Escrow
-            </span>
-          </button>
-
-          {/* 2. Vendor */}
-          <button
-            type="button"
-            onClick={() => setActiveTab("vendor")}
-            style={{
-              padding: "12px 8px",
-              borderRadius: "18px",
-              border: `2px solid ${activeTab === "vendor" ? "#16a34a" : "#e2eeff"}`,
-              background: activeTab === "vendor" ? "linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)" : "#ffffff",
-              cursor: "pointer",
-              textAlign: "center",
-              transition: "all 0.2s ease",
-              boxShadow: activeTab === "vendor" ? "0 8px 18px rgba(22, 163, 74, 0.18)" : "none",
-            }}
-          >
-            <div style={{ fontSize: "1.6rem", marginBottom: "4px" }}>🏪</div>
-            <strong style={{ fontSize: "0.85rem", color: activeTab === "vendor" ? "#16a34a" : "var(--text-main)", display: "block" }}>
-              Vendor
-            </strong>
-            <span style={{ fontSize: "0.68rem", color: "var(--text-muted)" }}>
-              Physical Stall
-            </span>
-          </button>
-
-          {/* 3. Admin */}
-          <button
-            type="button"
-            onClick={() => setActiveTab("admin")}
-            style={{
-              padding: "12px 8px",
-              borderRadius: "18px",
-              border: `2px solid ${activeTab === "admin" ? "#1e40af" : "#e2eeff"}`,
-              background: activeTab === "admin" ? "linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%)" : "#ffffff",
-              color: activeTab === "admin" ? "white" : "var(--text-main)",
-              cursor: "pointer",
-              textAlign: "center",
-              transition: "all 0.2s ease",
-              boxShadow: activeTab === "admin" ? "0 8px 18px rgba(30, 58, 138, 0.25)" : "none",
-            }}
-          >
-            <div style={{ fontSize: "1.6rem", marginBottom: "4px" }}>🛡️</div>
-            <strong style={{ fontSize: "0.85rem", color: activeTab === "admin" ? "#ffffff" : "var(--text-main)", display: "block" }}>
-              Admin
-            </strong>
-            <span style={{ fontSize: "0.68rem", color: activeTab === "admin" ? "#93c5fd" : "var(--text-muted)" }}>
-              Platform Owner
-            </span>
-          </button>
+        {/* Role selector */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "1.5rem" }}>
+          {(["buyer", "vendor", "admin"] as UserRole[]).map((role) => {
+            const icons: Record<string, string> = { buyer: "🛍️", vendor: "🏪", admin: "🛡️" };
+            const labels: Record<string, string> = { buyer: "Buyer", vendor: "Vendor", admin: "Admin" };
+            const subs: Record<string, string> = { buyer: "Shop & Pay", vendor: "My Stall", admin: "Platform" };
+            const rColor = role === "admin" ? "#1e3a8a" : role === "vendor" ? "#16a34a" : "#2563eb";
+            const isActive = activeTab === role;
+            return (
+              <button
+                key={role}
+                type="button"
+                onClick={() => { setActiveTab(role); setMode("login"); }}
+                style={{
+                  padding: "12px 8px",
+                  borderRadius: "16px",
+                  border: `2px solid ${isActive ? rColor : "#e2e8f0"}`,
+                  background: isActive ? (role === "admin" ? "linear-gradient(135deg,#1e3a8a,#2563eb)" : role === "vendor" ? "#f0fdf4" : "#eff6ff") : "#fff",
+                  color: isActive && role === "admin" ? "white" : rColor,
+                  cursor: "pointer",
+                  textAlign: "center",
+                  transition: "all 0.18s",
+                  boxShadow: isActive ? `0 6px 16px ${rColor}22` : "none",
+                }}
+              >
+                <div style={{ fontSize: "1.5rem", marginBottom: "3px" }}>{icons[role]}</div>
+                <strong style={{ fontSize: "0.82rem", display: "block" }}>{labels[role]}</strong>
+                <span style={{ fontSize: "0.68rem", opacity: 0.7 }}>{subs[role]}</span>
+              </button>
+            );
+          })}
         </div>
 
-        {/* ADMIN DEDICATED SEPARATE PANEL */}
-        {activeTab === "admin" && (
-          <div
-            style={{
-              background: "linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)",
-              color: "white",
-              padding: "1.25rem",
-              borderRadius: "18px",
-              marginBottom: "1.5rem",
-              border: "2px solid #60a5fa",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-              <span style={{ fontSize: "1.2rem" }}>🔒</span>
-              <strong style={{ fontSize: "0.95rem", color: "#93c5fd" }}>
-                Restricted Admin Gateway — Amos Bosire
-              </strong>
-            </div>
-            <p style={{ fontSize: "0.78rem", color: "#e2e8f0", lineHeight: "1.4" }}>
-              Master platform console for monitoring 100% escrow balances, releasing payouts, inventory in/out, and 10% fee M-Pesa withdrawals.
-            </p>
-
-            <div style={{ marginTop: "12px", background: "rgba(255,255,255,0.1)", padding: "10px", borderRadius: "12px", fontSize: "0.78rem" }}>
-              <div>Master Email: <strong>amosbosire@gmail.com</strong></div>
-              <div>Password: <strong>amo123</strong></div>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => handleQuickDemo("admin")}
-              style={{
-                width: "100%",
-                padding: "10px",
-                marginTop: "10px",
-                background: "#2563eb",
-                color: "white",
-                border: "none",
-                borderRadius: "var(--radius-pill)",
-                fontWeight: 800,
-                fontSize: "0.88rem",
-                cursor: "pointer",
-              }}
-            >
-              ⚡ Enter Master Admin Console &rarr;
-            </button>
+        {/* Login / Register tabs — only for buyer & vendor */}
+        {activeTab !== "admin" && (
+          <div style={{ display: "flex", gap: "6px", marginBottom: "1.25rem", background: "#f8faff", borderRadius: "12px", padding: "4px" }}>
+            {(["login", "register"] as const).map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => setMode(m)}
+                style={{
+                  flex: 1, padding: "8px", border: "none", borderRadius: "10px",
+                  fontWeight: 800, fontSize: "0.88rem", cursor: "pointer",
+                  background: mode === m ? tabColor : "transparent",
+                  color: mode === m ? "white" : "var(--text-muted)",
+                  transition: "all 0.15s",
+                }}
+              >
+                {m === "login" ? "Sign In" : "Create Account"}
+              </button>
+            ))}
           </div>
         )}
 
-        {/* VENDOR DEMO CARD */}
-        {activeTab === "vendor" && (
-          <div
-            style={{
-              background: "#f0fdf4",
-              border: "1.5px solid #86efac",
-              borderRadius: "16px",
-              padding: "12px",
-              marginBottom: "1.25rem",
-            }}
-          >
-            <div style={{ fontSize: "0.82rem", fontWeight: 800, color: "#166534", marginBottom: "4px" }}>
-              🏪 Verified Physical Shop Stall Portal
-            </div>
-            <div style={{ fontSize: "0.78rem", color: "#15803d", marginBottom: "8px" }}>
-              Demo: <strong>vender44@gmail.com</strong> | Password: <strong>vendoe33!</strong> (SokoLink Store - Mwembe Branch)
-            </div>
-            <button
-              type="button"
-              onClick={() => handleQuickDemo("vendor")}
-              className="btn-primary"
-              style={{ width: "100%", padding: "8px", fontSize: "0.82rem", background: "#16a34a", borderColor: "#16a34a" }}
-            >
-              ⚡ Log In as Vendor (Open Stall Hub) &rarr;
-            </button>
+        {/* Error message */}
+        {errorMsg && (
+          <div style={{
+            background: "#fef2f2", border: "1.5px solid #fca5a5",
+            color: "#b91c1c", padding: "10px 14px", borderRadius: "12px",
+            fontSize: "0.85rem", fontWeight: 700, marginBottom: "1rem",
+          }}>
+            ⚠️ {errorMsg}
           </div>
         )}
 
-        {/* BUYER DEMO CARD */}
-        {activeTab === "buyer" && (
-          <div
-            style={{
-              background: "#eff6ff",
-              border: "1.5px solid #bfdbfe",
-              borderRadius: "16px",
-              padding: "12px",
-              marginBottom: "1.25rem",
-            }}
-          >
-            <div style={{ fontSize: "0.82rem", fontWeight: 800, color: "var(--primary)", marginBottom: "4px" }}>
-              🛍️ Customer Safe Escrow Shopping
-            </div>
-            <div style={{ fontSize: "0.78rem", color: "#1e40af", marginBottom: "8px" }}>
-              Demo: <strong>buyer23@gmail.com</strong> | Password: <strong>buy123!@1</strong>
-            </div>
-            <button
-              type="button"
-              onClick={() => handleQuickDemo("buyer")}
-              className="btn-primary"
-              style={{ width: "100%", padding: "8px", fontSize: "0.82rem" }}
-            >
-              ⚡ Log In as Customer (Start Shopping) &rarr;
-            </button>
-          </div>
-        )}
-
-        {/* Regular Login Form */}
-        <form onSubmit={handleLoginSubmit}>
-          <div className="form-group">
-            <label className="form-label">
-              {activeTab === "admin" ? "Master Admin Email" : activeTab === "vendor" ? "Vendor Email or Phone" : "Buyer Email"}
-            </label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="form-input"
-              placeholder={
-                activeTab === "admin"
-                  ? "amosbosire@gmail.com"
-                  : activeTab === "vendor"
-                  ? "vender44@gmail.com"
-                  : "buyer23@gmail.com"
-              }
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Password</label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="form-input"
-              placeholder="••••••••"
-            />
-          </div>
-
-          {activeTab === "vendor" && (
-            <>
-              <div className="form-group">
-                <label className="form-label">Shop Stall Name</label>
-                <input
-                  type="text"
-                  placeholder="e.g. SokoLink Store - Mwembe Branch"
-                  value={businessName}
-                  onChange={(e) => setBusinessName(e.target.value)}
-                  className="form-input"
-                />
+        {/* ── LOGIN FORM ── */}
+        {(activeTab === "admin" || mode === "login") && (
+          <form onSubmit={handleLogin}>
+            {activeTab === "admin" && (
+              <div style={{
+                background: "linear-gradient(135deg,#0f172a,#1e3a8a)",
+                color: "white", padding: "14px", borderRadius: "14px",
+                marginBottom: "1.25rem", fontSize: "0.82rem", lineHeight: 1.5,
+              }}>
+                🔒 <strong>Restricted Admin Access</strong><br />
+                Only the platform owner can access this console.
               </div>
+            )}
 
-              <div className="form-group">
-                <label className="form-label">Stall Number / Building</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Stall 14, Mwembe Plaza"
-                  value={stallNumber}
-                  onChange={(e) => setStallNumber(e.target.value)}
-                  className="form-input"
-                />
-              </div>
-            </>
-          )}
-
-          {/* Location Selector (Relevant for Buyer & Vendor in Kenya) */}
-          {activeTab !== "admin" && (
-            <div
-              style={{
-                background: "#f8faff",
-                padding: "1rem",
-                borderRadius: "14px",
-                border: "1px solid #e2eeff",
-                margin: "1rem 0",
-              }}
-            >
-              <label style={{ fontSize: "0.82rem", fontWeight: 800, color: "var(--primary)", display: "block", marginBottom: "8px" }}>
-                📍 {activeTab === "vendor" ? "Physical Shop Location in Kenya:" : "Your Delivery Estate in Kenya:"}
+            <div className="form-group">
+              <label className="form-label">
+                {activeTab === "admin" ? "Admin Email" : "Email Address"}
               </label>
+              <input
+                type="email" required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="form-input"
+                placeholder="Enter your email"
+                autoComplete="email"
+              />
+            </div>
 
+            <div className="form-group">
+              <label className="form-label">Password</label>
+              <input
+                type="password" required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="form-input"
+                placeholder="••••••••"
+                autoComplete="current-password"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="btn-primary"
+              style={{
+                width: "100%", padding: "13px", marginTop: "10px",
+                fontSize: "0.95rem", fontWeight: 800,
+                background: tabColor, borderColor: tabColor,
+              }}
+            >
+              {activeTab === "admin" ? "🛡️ Access Admin Console" : activeTab === "vendor" ? "🏪 Sign In to Stall" : "🛍️ Sign In & Shop"}
+            </button>
+
+            {activeTab !== "admin" && (
+              <p style={{ textAlign: "center", fontSize: "0.82rem", color: "var(--text-muted)", marginTop: "12px" }}>
+                No account yet?{" "}
+                <button type="button" onClick={() => setMode("register")}
+                  style={{ background: "none", border: "none", color: tabColor, fontWeight: 800, cursor: "pointer", fontSize: "0.82rem" }}>
+                  Create one free →
+                </button>
+              </p>
+            )}
+          </form>
+        )}
+
+        {/* ── REGISTER FORM ── */}
+        {activeTab !== "admin" && mode === "register" && (
+          <form onSubmit={handleRegister}>
+            <div className="form-group">
+              <label className="form-label">Full Name *</label>
+              <input type="text" required value={name} onChange={(e) => setName(e.target.value)}
+                className="form-input" placeholder="e.g. John Mwangi" />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Email Address *</label>
+              <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+                className="form-input" placeholder="e.g. john@gmail.com" autoComplete="email" />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Phone Number</label>
+              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)}
+                className="form-input" placeholder="e.g. 0712 345 678" />
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+              <div className="form-group">
+                <label className="form-label">Password *</label>
+                <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
+                  className="form-input" placeholder="Min 6 chars" autoComplete="new-password" />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Confirm Password *</label>
+                <input type="password" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="form-input" placeholder="Repeat password" />
+              </div>
+            </div>
+
+            {/* Vendor-only fields */}
+            {activeTab === "vendor" && (
+              <>
+                <div style={{ borderTop: "1px dashed #e2e8f0", margin: "12px 0 10px", paddingTop: "10px" }}>
+                  <div style={{ fontSize: "0.78rem", fontWeight: 800, color: "#16a34a", marginBottom: "8px" }}>
+                    🏪 Shop Details
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Shop / Business Name *</label>
+                  <input type="text" required value={businessName} onChange={(e) => setBusinessName(e.target.value)}
+                    className="form-input" placeholder="e.g. Kimani Hardware Kisii" />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Stall / Shop Location *</label>
+                  <input type="text" required value={stallNumber} onChange={(e) => setStallNumber(e.target.value)}
+                    className="form-input" placeholder="e.g. Shop 7, Mwembe Market" />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Business Registration No. (optional)</label>
+                  <input type="text" value={businessReg} onChange={(e) => setBusinessReg(e.target.value)}
+                    className="form-input" placeholder="e.g. BN-KS-2024-12345" />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Product Category</label>
+                  <select value={vendorCategory} onChange={(e) => setVendorCategory(e.target.value)} className="form-select">
+                    <option>Bags &amp; Totes</option>
+                    <option>Pillows &amp; Bedding</option>
+                    <option>Plushies &amp; Toys</option>
+                    <option>Care &amp; Beauty</option>
+                    <option>Shoes &amp; Clothes</option>
+                    <option>Food &amp; Groceries</option>
+                    <option>Electronics</option>
+                    <option>Hardware &amp; Tools</option>
+                  </select>
+                </div>
+              </>
+            )}
+
+            {/* Kenya Location */}
+            <div style={{
+              background: "#f8faff", padding: "1rem", borderRadius: "14px",
+              border: "1px solid #e2eeff", margin: "10px 0",
+            }}>
+              <label style={{ fontSize: "0.78rem", fontWeight: 800, color: tabColor, display: "block", marginBottom: "8px" }}>
+                📍 {activeTab === "vendor" ? "Shop Location in Kenya:" : "Your Location in Kenya:"}
+              </label>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }}>
                 <div>
-                  <label style={{ fontSize: "0.72rem", fontWeight: 700, display: "block", marginBottom: "2px" }}>County</label>
-                  <select
-                    value={county}
-                    onChange={(e) => setCounty(e.target.value)}
-                    className="form-select"
-                    style={{ padding: "6px", fontSize: "0.8rem" }}
-                  >
-                    {KENYA_COUNTIES_DATA.map((c) => (
-                      <option key={c.county} value={c.county}>
-                        {c.county}
-                      </option>
-                    ))}
+                  <label style={{ fontSize: "0.7rem", fontWeight: 700, display: "block", marginBottom: "2px" }}>County</label>
+                  <select value={county} onChange={(e) => setCounty(e.target.value)} className="form-select" style={{ padding: "6px", fontSize: "0.78rem" }}>
+                    {KENYA_COUNTIES_DATA.map((c) => <option key={c.county}>{c.county}</option>)}
                   </select>
                 </div>
-
                 <div>
-                  <label style={{ fontSize: "0.72rem", fontWeight: 700, display: "block", marginBottom: "2px" }}>Town</label>
-                  <select
-                    value={town}
-                    onChange={(e) => setTown(e.target.value)}
-                    className="form-select"
-                    style={{ padding: "6px", fontSize: "0.8rem" }}
-                  >
-                    {availableTowns.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
+                  <label style={{ fontSize: "0.7rem", fontWeight: 700, display: "block", marginBottom: "2px" }}>Town</label>
+                  <select value={town} onChange={(e) => setTown(e.target.value)} className="form-select" style={{ padding: "6px", fontSize: "0.78rem" }}>
+                    {availableTowns.map((t) => <option key={t}>{t}</option>)}
                   </select>
                 </div>
-
                 <div>
-                  <label style={{ fontSize: "0.72rem", fontWeight: 700, display: "block", marginBottom: "2px" }}>Estate</label>
-                  <select
-                    value={estate}
-                    onChange={(e) => setEstate(e.target.value)}
-                    className="form-select"
-                    style={{ padding: "6px", fontSize: "0.8rem" }}
-                  >
-                    {availableEstates.map((est) => (
-                      <option key={est} value={est}>
-                        {est}
-                      </option>
-                    ))}
+                  <label style={{ fontSize: "0.7rem", fontWeight: 700, display: "block", marginBottom: "2px" }}>Estate</label>
+                  <select value={estate} onChange={(e) => setEstate(e.target.value)} className="form-select" style={{ padding: "6px", fontSize: "0.78rem" }}>
+                    {availableEstates.map((est) => <option key={est}>{est}</option>)}
                   </select>
                 </div>
               </div>
             </div>
-          )}
 
-          <button
-            type="submit"
-            className="btn-primary"
-            style={{
-              width: "100%",
-              padding: "12px",
-              marginTop: "8px",
-              fontSize: "0.95rem",
-              background: activeTab === "admin" ? "#1e3a8a" : activeTab === "vendor" ? "#16a34a" : undefined,
-              borderColor: activeTab === "admin" ? "#1e3a8a" : activeTab === "vendor" ? "#16a34a" : undefined,
-            }}
-          >
-            Log In as {activeTab === "admin" ? "Master Admin" : activeTab === "vendor" ? "Vendor Stall" : "Customer"}
-          </button>
-        </form>
+            <button
+              type="submit"
+              className="btn-primary"
+              style={{
+                width: "100%", padding: "13px", marginTop: "8px",
+                fontSize: "0.95rem", fontWeight: 800,
+                background: tabColor, borderColor: tabColor,
+              }}
+            >
+              {activeTab === "vendor" ? "✅ Register My Shop" : "✅ Create My Account"}
+            </button>
+
+            <p style={{ textAlign: "center", fontSize: "0.82rem", color: "var(--text-muted)", marginTop: "12px" }}>
+              Already have an account?{" "}
+              <button type="button" onClick={() => setMode("login")}
+                style={{ background: "none", border: "none", color: tabColor, fontWeight: 800, cursor: "pointer", fontSize: "0.82rem" }}>
+                Sign in →
+              </button>
+            </p>
+          </form>
+        )}
       </div>
     </div>
   );

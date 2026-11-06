@@ -9,43 +9,67 @@ import { useAuth } from "../../../context/AuthContext";
 export default function VendorLoginPage() {
   const router = useRouter();
   const { loginAs } = useAuth();
-  const [emailOrPhone, setEmailOrPhone] = useState("vender44@gmail.com");
-  const [password, setPassword] = useState("vendoe33!");
+  const [emailOrPhone, setEmailOrPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    const vendors = getStoredVendors();
-    const found = vendors.find(
-      (v) => v.email.toLowerCase() === emailOrPhone.toLowerCase() || v.phone.includes(emailOrPhone)
-    ) || vendors[0];
+    setError(null);
 
-    localStorage.setItem("current_vendor", JSON.stringify(found));
-    loginAs({
-      id: found.id,
-      name: found.name,
-      email: found.email,
-      phone: found.phone,
-      role: "vendor",
-      location: found.location,
-      createdAt: found.joinedDate,
-    });
-    router.push("/vendor/dashboard");
-  };
+    const input = emailOrPhone.trim().toLowerCase();
 
-  const handleQuickLogin = (vendorId: string) => {
+    // 1. Check registered users from localStorage
+    try {
+      const users = JSON.parse(localStorage.getItem("sokolink_users") || "{}");
+      for (const key of Object.keys(users)) {
+        const u = users[key];
+        const emailMatch = u.profile?.email?.toLowerCase() === input;
+        const phoneMatch = u.profile?.phone && u.profile.phone.replace(/\s+/g, "").includes(input.replace(/\s+/g, ""));
+        if ((emailMatch || phoneMatch) && u.password === password) {
+          if (u.profile.role !== "vendor") {
+            setError("This account is registered as a buyer. Please sign in via the buyer portal.");
+            return;
+          }
+          if (u.vendorData) {
+            localStorage.setItem("current_vendor", JSON.stringify(u.vendorData));
+          }
+          loginAs(u.profile);
+          router.push("/vendor/dashboard");
+          return;
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
+    // 2. Check initial seeded vendors in system
     const vendors = getStoredVendors();
-    const found = vendors.find((v) => v.id === vendorId) || vendors[0];
-    localStorage.setItem("current_vendor", JSON.stringify(found));
-    loginAs({
-      id: found.id,
-      name: found.name,
-      email: found.email,
-      phone: found.phone,
-      role: "vendor",
-      location: found.location,
-      createdAt: found.joinedDate,
-    });
-    router.push("/vendor/dashboard");
+    const foundVendor = vendors.find(
+      (v) =>
+        v.email.toLowerCase() === input ||
+        (v.phone && v.phone.replace(/\s+/g, "").includes(input.replace(/\s+/g, "")))
+    );
+
+    if (foundVendor) {
+      // Seed vendor password match check
+      if (password === "vendoe33!" || password === "vendor123") {
+        localStorage.setItem("current_vendor", JSON.stringify(foundVendor));
+        loginAs({
+          id: foundVendor.id,
+          name: foundVendor.name,
+          email: foundVendor.email,
+          phone: foundVendor.phone,
+          role: "vendor",
+          location: foundVendor.location,
+          createdAt: foundVendor.joinedDate,
+        });
+        router.push("/vendor/dashboard");
+        return;
+      }
+    }
+
+    setError("Invalid email/phone or password. Please verify your stall login details or register a new stall.");
   };
 
   return (
@@ -85,16 +109,34 @@ export default function VendorLoginPage() {
           </p>
         </div>
 
+        {error && (
+          <div
+            style={{
+              background: "#fee2e2",
+              border: "1px solid #ef4444",
+              color: "#991b1b",
+              padding: "10px 14px",
+              borderRadius: "12px",
+              fontSize: "0.82rem",
+              fontWeight: 700,
+              marginBottom: "1.25rem",
+            }}
+          >
+            ⚠️ {error}
+          </div>
+        )}
+
         <form onSubmit={handleLogin}>
           <div className="form-group">
             <label className="form-label">Vendor Email or Safaricom Phone</label>
             <input
               type="text"
               required
-              placeholder="vender44@gmail.com"
+              placeholder="e.g. 0712 345 678 or shop@gmail.com"
               value={emailOrPhone}
               onChange={(e) => setEmailOrPhone(e.target.value)}
               className="form-input"
+              autoComplete="username"
             />
           </div>
 
@@ -107,6 +149,7 @@ export default function VendorLoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="form-input"
+              autoComplete="current-password"
             />
           </div>
 
@@ -126,34 +169,12 @@ export default function VendorLoginPage() {
           </button>
         </form>
 
-        <div style={{ marginTop: "1.75rem", borderTop: "2px dashed #e2eeff", paddingTop: "1.25rem" }}>
-          <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 700, display: "block", marginBottom: "8px" }}>
-            ⚡ 1-Click Demo Shop Sign-In:
-          </span>
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            <button
-              onClick={() => handleQuickLogin("v-vender44")}
-              className="btn-secondary"
-              style={{ padding: "10px 14px", fontSize: "0.85rem", textAlign: "left", borderColor: "#86efac" }}
-            >
-              🏪 Continue as <strong>SokoLink Store (Mwembe Branch)</strong>
-            </button>
-            <button
-              onClick={() => handleQuickLogin("v-daraja")}
-              className="btn-secondary"
-              style={{ padding: "10px 14px", fontSize: "0.85rem", textAlign: "left" }}
-            >
-              🩴 Continue as <strong>Daraja Mbili Footwear</strong>
-            </button>
-          </div>
-        </div>
-
-        <div style={{ textAlign: "center", marginTop: "1.75rem", fontSize: "0.88rem" }}>
-          Don't have a shop account?{" "}
+        <div style={{ textAlign: "center", marginTop: "2rem", fontSize: "0.88rem" }}>
+          Don't have a shop account yet?{" "}
           <Link href="/vendor/register" style={{ color: "#16a34a", fontWeight: 700 }}>
             Register Your Stall
           </Link>
-          <div style={{ marginTop: "10px" }}>
+          <div style={{ marginTop: "12px" }}>
             <Link href="/" style={{ color: "var(--primary)", fontSize: "0.82rem", fontWeight: 600 }}>
               &larr; Back to SokoLink Marketplace
             </Link>

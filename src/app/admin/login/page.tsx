@@ -8,14 +8,14 @@ import { useAuth } from "../../../context/AuthContext";
 export default function AdminLoginPage() {
   const router = useRouter();
   const { loginAs } = useAuth();
-  const [email, setEmail] = useState("amosbosire@gmail.com");
-  const [password, setPassword] = useState("amo123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (
-      (email === "amosbosire@gmail.com" || email === "admin@sokolink.co.ke") &&
+      (email.trim().toLowerCase() === "amosbosire@gmail.com" || email.trim().toLowerCase() === "admin@sokolink.co.ke") &&
       (password === "amo123" || password === "admin123")
     ) {
       localStorage.setItem("admin_auth", "true");
@@ -30,7 +30,7 @@ export default function AdminLoginPage() {
       });
       router.push("/admin");
     } else {
-      setError("Access Denied: Invalid Master Admin credentials. Only Amos Bosire has console authorization.");
+      setError("Access Denied: Invalid Master Admin credentials. Only the platform owner has console authorization.");
     }
   };
 
@@ -67,7 +67,7 @@ export default function AdminLoginPage() {
             SokoLink Admin Portal
           </h1>
           <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginTop: "4px" }}>
-            Restricted Master Access • Platform Owner Only (Amos Bosire)
+            Restricted Master Access • Platform Owner Only
           </p>
         </div>
 
@@ -97,7 +97,8 @@ export default function AdminLoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="form-input"
-              placeholder="amosbosire@gmail.com"
+              placeholder="admin@sokolink.co.ke"
+              autoComplete="email"
             />
           </div>
 
@@ -110,6 +111,7 @@ export default function AdminLoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               className="form-input"
               placeholder="••••••••"
+              autoComplete="current-password"
             />
           </div>
 
@@ -127,15 +129,6 @@ export default function AdminLoginPage() {
             Unlock Master Admin Console
           </button>
         </form>
-
-        <div style={{ marginTop: "1.75rem", borderTop: "2px dashed #e2eeff", paddingTop: "1.25rem" }}>
-          <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginBottom: "6px" }}>
-            Platform Owner Credentials:
-          </div>
-          <div style={{ fontSize: "0.82rem", background: "#eff6ff", padding: "8px 12px", borderRadius: "10px", color: "#1e40af" }}>
-            Email: <strong>amosbosire@gmail.com</strong> | Pass: <strong>amo123</strong>
-          </div>
-        </div>
 
         <div style={{ textAlign: "center", marginTop: "2rem", fontSize: "0.88rem" }}>
           <Link href="/" style={{ color: "var(--primary)", fontWeight: 700 }}>

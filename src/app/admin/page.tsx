@@ -127,7 +127,7 @@ export default function AdminDashboardPage() {
 
           <form onSubmit={handleAdminAuth}>
             <div className="form-group" style={{ textAlign: "left" }}>
-              <label className="form-label">Master Passkey (Demo: amo123)</label>
+              <label className="form-label">Master Passkey</label>
               <input
                 type="password"
                 required
