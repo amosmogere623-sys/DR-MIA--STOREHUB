@@ -19,8 +19,40 @@ export default function VendorRegisterPage() {
   const [category, setCategory] = useState("Bags & Totes");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [shopPhoto, setShopPhoto] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleShopPhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const rawDataUrl = event.target?.result as string;
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_DIM = 800;
+        let w = img.width;
+        let h = img.height;
+        if (w > h && w > MAX_DIM) {
+          h = Math.round((h * MAX_DIM) / w);
+          w = MAX_DIM;
+        } else if (h > MAX_DIM) {
+          w = Math.round((w * MAX_DIM) / h);
+          h = MAX_DIM;
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, w, h);
+        setShopPhoto(canvas.toDataURL("image/jpeg", 0.82));
+      };
+      img.src = rawDataUrl;
+    };
+    reader.readAsDataURL(file);
+  };
 
   // Kenya location selectors
   const [county, setCounty] = useState("Kisii");
@@ -77,6 +109,7 @@ export default function VendorRegisterPage() {
       tokenBalance: 50,
       mpesaNumber: phone.trim(),
       status: "Approved",
+      shopFrontImageUrl: shopPhoto || undefined,
       joinedDate: new Date().toISOString().split("T")[0],
     };
 
@@ -291,6 +324,32 @@ export default function VendorRegisterPage() {
               <option value="Electronics">Electronics</option>
               <option value="Hardware & Tools">Hardware &amp; Tools</option>
             </select>
+          </div>
+
+          {/* Shop Stall Photo from Device */}
+          <div className="form-group">
+            <label className="form-label">Shop Stall Photo (Upload from Phone/Device - Optional)</label>
+            {shopPhoto ? (
+              <div style={{ position: "relative", borderRadius: "14px", overflow: "hidden", border: "2px solid #86efac", maxHeight: "160px", marginBottom: "8px" }}>
+                <img src={shopPhoto} alt="Shop stall preview" style={{ width: "100%", height: "160px", objectFit: "cover", display: "block" }} />
+                <div style={{ position: "absolute", bottom: "8px", right: "8px", display: "flex", gap: "6px" }}>
+                  <label className="btn-secondary" style={{ padding: "4px 10px", fontSize: "0.75rem", cursor: "pointer", background: "white" }}>
+                    🔄 Change Photo
+                    <input type="file" accept="image/*" onChange={handleShopPhotoSelect} style={{ display: "none" }} />
+                  </label>
+                  <button type="button" onClick={() => setShopPhoto("")} style={{ background: "#ef4444", color: "white", border: "none", padding: "4px 10px", borderRadius: "999px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }}>
+                    ✕ Remove
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <label style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "1.5rem 1rem", border: "2px dashed #86efac", borderRadius: "14px", background: "#f0fdf4", cursor: "pointer", textAlign: "center" }}>
+                <div style={{ fontSize: "2rem", marginBottom: "4px" }}>📸</div>
+                <strong style={{ fontSize: "0.88rem", color: "#166534" }}>Tap to Upload Stall / Shop Front Photo</strong>
+                <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Choose from phone gallery or take photo</span>
+                <input type="file" accept="image/*" onChange={handleShopPhotoSelect} style={{ display: "none" }} />
+              </label>
+            )}
           </div>
 
           <div className="responsive-grid-2">

@@ -36,7 +36,51 @@ export default function VendorDashboardPage() {
   const [newUnit, setNewUnit] = useState("pc");
   const [newCategory, setNewCategory] = useState<Product["category"]>("Bags & Totes");
   const [newStock, setNewStock] = useState(30);
-  const [newImage, setNewImage] = useState("https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&auto=format&fit=crop&q=80");
+  const [newImage, setNewImage] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file (e.g. JPG, PNG, WebP).");
+      return;
+    }
+
+    setIsUploading(true);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const rawDataUrl = event.target?.result as string;
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_DIM = 800;
+        let w = img.width;
+        let h = img.height;
+        if (w > h && w > MAX_DIM) {
+          h = Math.round((h * MAX_DIM) / w);
+          w = MAX_DIM;
+        } else if (h > MAX_DIM) {
+          w = Math.round((w * MAX_DIM) / h);
+          h = MAX_DIM;
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, w, h);
+        const compressed = canvas.toDataURL("image/jpeg", 0.82);
+        setNewImage(compressed);
+        setIsUploading(false);
+      };
+      img.onerror = () => {
+        setNewImage(rawDataUrl);
+        setIsUploading(false);
+      };
+      img.src = rawDataUrl;
+    };
+    reader.readAsDataURL(file);
+  };
 
   const refreshData = () => {
     const vendors = getStoredVendors();
@@ -116,6 +160,11 @@ export default function VendorDashboardPage() {
     e.preventDefault();
     if (!vendor) return;
 
+    if (!newImage) {
+      alert("Please upload a photo of your product from your phone or device.");
+      return;
+    }
+
     const newProd: Product = {
       id: "mia-" + Date.now(),
       name: newName,
@@ -142,6 +191,7 @@ export default function VendorDashboardPage() {
     setNewName("");
     setNewDesc("");
     setNewPrice(450);
+    setNewImage("");
   };
 
   const vendorProducts = products.filter(
@@ -508,19 +558,111 @@ export default function VendorDashboardPage() {
                     <option value="Plushies & Toys">Plushies & Toys</option>
                     <option value="Care & Beauty">Care & Beauty</option>
                     <option value="Shoes & Clothes">Shoes & Clothes</option>
+                    <option value="Food & Groceries">Food & Groceries</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Hardware & Tools">Hardware & Tools</option>
                   </select>
                 </div>
               </div>
 
+              {/* Upload Product Photo from Device */}
               <div className="form-group">
-                <label className="form-label">Photo URL</label>
-                <input
-                  type="url"
-                  required
-                  value={newImage}
-                  onChange={(e) => setNewImage(e.target.value)}
-                  className="form-input"
-                />
+                <label className="form-label">Product Photo (From Your Phone / Device) *</label>
+
+                {newImage ? (
+                  <div
+                    style={{
+                      position: "relative",
+                      borderRadius: "16px",
+                      overflow: "hidden",
+                      border: "2px solid #86efac",
+                      maxHeight: "220px",
+                      background: "#f0fdf4",
+                      marginBottom: "6px",
+                    }}
+                  >
+                    <img
+                      src={newImage}
+                      alt="Product preview"
+                      style={{ width: "100%", height: "200px", objectFit: "cover", display: "block" }}
+                    />
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: "8px",
+                        right: "8px",
+                        display: "flex",
+                        gap: "8px",
+                      }}
+                    >
+                      <label
+                        className="btn-secondary"
+                        style={{
+                          padding: "6px 12px",
+                          fontSize: "0.78rem",
+                          cursor: "pointer",
+                          background: "rgba(255, 255, 255, 0.95)",
+                        }}
+                      >
+                        📷 Change Photo
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileSelect}
+                          style={{ display: "none" }}
+                        />
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setNewImage("")}
+                        style={{
+                          background: "#ef4444",
+                          color: "white",
+                          border: "none",
+                          padding: "6px 12px",
+                          borderRadius: "999px",
+                          fontSize: "0.78rem",
+                          fontWeight: 700,
+                          cursor: "pointer",
+                        }}
+                      >
+                        ✕ Remove
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <label
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "2rem 1.25rem",
+                      border: "2px dashed #93c5fd",
+                      borderRadius: "18px",
+                      background: isUploading ? "#eff6ff" : "#f8faff",
+                      cursor: "pointer",
+                      textAlign: "center",
+                      transition: "all 0.2s ease",
+                    }}
+                  >
+                    <div style={{ fontSize: "2.5rem", marginBottom: "6px" }}>
+                      {isUploading ? "⏳" : "📸"}
+                    </div>
+                    <strong style={{ fontSize: "0.95rem", color: "var(--primary)", display: "block" }}>
+                      {isUploading ? "Optimizing image from device..." : "Tap to Upload Photo from Device"}
+                    </strong>
+                    <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "4px" }}>
+                      Choose from your phone gallery or snap a photo with your camera
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileSelect}
+                      style={{ display: "none" }}
+                    />
+                  </label>
+                )}
               </div>
 
               <div className="form-group">
