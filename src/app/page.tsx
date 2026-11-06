@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { getStoredProducts, addToCart, getStoredVendors } from "../lib/data";
+import { getStoredProducts, addToCart, getStoredVendors, syncAllFromServer } from "../lib/data";
 import { Product, Vendor } from "../types";
 import { useAuth } from "../context/AuthContext";
 import { aiMatchBuyerToVendors, aiRankProductsByLocation, AILocationMatchResult } from "../lib/aiLocationMatch";
@@ -73,12 +73,21 @@ export default function HomePage() {
   };
 
   useEffect(() => {
+    syncAllFromServer();
     loadData();
+
     const handleUpdate = () => loadData();
     window.addEventListener("productsUpdated", handleUpdate);
     window.addEventListener("vendorsUpdated", handleUpdate);
     window.addEventListener("userLocationChanged", handleUpdate);
+
+    // Auto-poll server every 4 seconds so products posted by any vendor appear across devices
+    const pollInterval = setInterval(() => {
+      syncAllFromServer();
+    }, 4000);
+
     return () => {
+      clearInterval(pollInterval);
       window.removeEventListener("productsUpdated", handleUpdate);
       window.removeEventListener("vendorsUpdated", handleUpdate);
       window.removeEventListener("userLocationChanged", handleUpdate);
@@ -486,21 +495,32 @@ export default function HomePage() {
       {/* Products Grid */}
       {filteredProducts.length === 0 ? (
         <div className="panel" style={{ textAlign: "center", padding: "4rem 2rem" }}>
-          <div style={{ fontSize: "3rem", marginBottom: "12px" }}>🔍</div>
-          <h3 style={{ fontSize: "1.2rem", fontWeight: 800 }}>No items found</h3>
-          <p style={{ color: "var(--text-muted)", marginTop: "6px" }}>
-            Try another category or clear your search query.
+          <div style={{ fontSize: "3rem", marginBottom: "12px" }}>🛍️</div>
+          <h3 style={{ fontSize: "1.2rem", fontWeight: 800 }}>
+            {products.length === 0 ? "No Products in the Marketplace Yet" : "No items match your filter"}
+          </h3>
+          <p style={{ color: "var(--text-muted)", marginTop: "6px", maxWidth: "460px", margin: "6px auto 0" }}>
+            {products.length === 0
+              ? "Vendors can register and post their products using device photo uploads to list items immediately."
+              : "Try another category or clear your search query to see other available products."}
           </p>
-          <button
-            onClick={() => {
-              setSelectedCategory("All");
-              setSearchQuery("");
-            }}
-            className="btn-primary"
-            style={{ marginTop: "1.25rem" }}
-          >
-            View All Products
-          </button>
+          <div style={{ display: "flex", gap: "10px", justifyContent: "center", marginTop: "1.25rem", flexWrap: "wrap" }}>
+            {products.length === 0 ? (
+              <Link href="/vendor/register" className="btn-primary">
+                🏪 Register as Vendor & Post Products
+              </Link>
+            ) : (
+              <button
+                onClick={() => {
+                  setSelectedCategory("All");
+                  setSearchQuery("");
+                }}
+                className="btn-primary"
+              >
+                View All Products
+              </button>
+            )}
+          </div>
         </div>
       ) : (
         <div className="product-grid">

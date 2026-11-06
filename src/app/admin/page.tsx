@@ -12,8 +12,9 @@ import {
   getAdminTreasury,
   withdrawAdminCommission,
   toggleProductInStock,
+  syncAllFromServer,
 } from "../../lib/data";
-import { Order, Vendor, Product, AdminTreasury } from "../../types";
+import { Order, Vendor, Product, AdminTreasury, UserProfile } from "../../types";
 import { useAuth } from "../../context/AuthContext";
 
 export default function AdminDashboardPage() {
@@ -23,12 +24,13 @@ export default function AdminDashboardPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [users, setUsers] = useState<UserProfile[]>([]);
   const [treasury, setTreasury] = useState<AdminTreasury>(getAdminTreasury());
 
-  const [activeTab, setActiveTab] = useState<"treasury" | "orders" | "inventory" | "vendors" | "aiMatch">("orders");
+  const [activeTab, setActiveTab] = useState<"treasury" | "orders" | "inventory" | "vendors" | "buyers" | "aiMatch">("orders");
 
   // Admin M-Pesa Withdrawal State
-  const [withdrawAmount, setWithdrawAmount] = useState<number>(4000);
+  const [withdrawAmount, setWithdrawAmount] = useState<number>(0);
   const [adminPhone, setAdminPhone] = useState<string>("0711 000 999");
   const [payoutNotice, setPayoutNotice] = useState<string | null>(null);
 
@@ -38,24 +40,49 @@ export default function AdminDashboardPage() {
     currentUser?.role === "admin" ||
     (typeof window !== "undefined" && localStorage.getItem("admin_auth") === "true");
 
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch("/api/users", { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.users)) {
+          setUsers(data.users);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const refreshData = () => {
     setOrders(getStoredOrders());
     setVendors(getStoredVendors());
     setProducts(getStoredProducts());
     setTreasury(getAdminTreasury());
+    fetchUsers();
   };
 
   useEffect(() => {
+    syncAllFromServer();
     refreshData();
-    window.addEventListener("ordersUpdated", refreshData);
-    window.addEventListener("vendorsUpdated", refreshData);
-    window.addEventListener("productsUpdated", refreshData);
-    window.addEventListener("treasuryUpdated", refreshData);
+    const handleUpdate = () => refreshData();
+    window.addEventListener("ordersUpdated", handleUpdate);
+    window.addEventListener("vendorsUpdated", handleUpdate);
+    window.addEventListener("productsUpdated", handleUpdate);
+    window.addEventListener("treasuryUpdated", handleUpdate);
+
+    // Auto-poll server every 4 seconds so real vendors, buyers, orders sync live across devices
+    const interval = setInterval(() => {
+      syncAllFromServer();
+      fetchUsers();
+    }, 4000);
+
     return () => {
-      window.removeEventListener("ordersUpdated", refreshData);
-      window.removeEventListener("vendorsUpdated", refreshData);
-      window.removeEventListener("productsUpdated", refreshData);
-      window.removeEventListener("treasuryUpdated", refreshData);
+      clearInterval(interval);
+      window.removeEventListener("ordersUpdated", handleUpdate);
+      window.removeEventListener("vendorsUpdated", handleUpdate);
+      window.removeEventListener("productsUpdated", handleUpdate);
+      window.removeEventListener("treasuryUpdated", handleUpdate);
     };
   }, []);
 
@@ -111,6 +138,7 @@ export default function AdminDashboardPage() {
     .reduce((sum, o) => sum + o.vendorPayoutAmount, 0);
 
   const totalVolume = orders.reduce((sum, o) => sum + o.total, 0);
+  const buyers = users.filter((u) => u.role === "buyer");
 
   // If not authorized as Admin, show dedicated "Only Me" Gate
   if (!isAuthorized) {
@@ -285,31 +313,37 @@ export default function AdminDashboardPage() {
           onClick={() => setActiveTab("orders")}
           className={`cat-btn ${activeTab === "orders" ? "active" : ""}`}
         >
-          📦 All Payments to Escrow ({orders.length})
-        </button>
-        <button
-          onClick={() => setActiveTab("inventory")}
-          className={`cat-btn ${activeTab === "inventory" ? "active" : ""}`}
-        >
-          🏷️ Products In & Out ({products.length})
-        </button>
-        <button
-          onClick={() => setActiveTab("aiMatch")}
-          className={`cat-btn ${activeTab === "aiMatch" ? "active" : ""}`}
-        >
-          🤖 AI Location & Escrow Safety
-        </button>
-        <button
-          onClick={() => setActiveTab("treasury")}
-          className={`cat-btn ${activeTab === "treasury" ? "active" : ""}`}
-        >
-          💰 Withdraw 10% Fee to M-Pesa
+          📦 Orders ({orders.length})
         </button>
         <button
           onClick={() => setActiveTab("vendors")}
           className={`cat-btn ${activeTab === "vendors" ? "active" : ""}`}
         >
-          🏪 Registered Shops ({vendors.length})
+          🏪 Registered Vendors ({vendors.length})
+        </button>
+        <button
+          onClick={() => setActiveTab("buyers")}
+          className={`cat-btn ${activeTab === "buyers" ? "active" : ""}`}
+        >
+          👥 Registered Buyers ({buyers.length})
+        </button>
+        <button
+          onClick={() => setActiveTab("inventory")}
+          className={`cat-btn ${activeTab === "inventory" ? "active" : ""}`}
+        >
+          🏷️ Products In Catalog ({products.length})
+        </button>
+        <button
+          onClick={() => setActiveTab("treasury")}
+          className={`cat-btn ${activeTab === "treasury" ? "active" : ""}`}
+        >
+          💰 10% Platform Fee Cashout
+        </button>
+        <button
+          onClick={() => setActiveTab("aiMatch")}
+          className={`cat-btn ${activeTab === "aiMatch" ? "active" : ""}`}
+        >
+          🤖 AI Location & Protection
         </button>
       </div>
 
@@ -631,9 +665,27 @@ export default function AdminDashboardPage() {
       {/* TAB 4: Registered Shop Stalls */}
       {activeTab === "vendors" && (
         <div className="panel">
-          <h2 style={{ fontSize: "1.25rem", fontWeight: 800, marginBottom: "1.25rem" }}>
-            Registered Physical Shops in Kenya
-          </h2>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem", flexWrap: "wrap", gap: "10px" }}>
+            <div>
+              <h2 style={{ fontSize: "1.25rem", fontWeight: 800 }}>
+                Registered Vendors & Physical Shops
+              </h2>
+              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
+                All vendor accounts who have registered on SokoLink.
+              </p>
+            </div>
+            <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "#16a34a" }}>
+              Total Vendors: {vendors.length}
+            </div>
+          </div>
+
+          {vendors.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "3rem 2rem", color: "var(--text-muted)" }}>
+              <div style={{ fontSize: "2.5rem", marginBottom: "10px" }}>🏪</div>
+              <p style={{ fontWeight: 700 }}>No vendors have registered yet.</p>
+              <p style={{ fontSize: "0.85rem", marginTop: "6px" }}>Vendor shops will appear here once sellers register their accounts.</p>
+            </div>
+          ) : (
           <div style={{ overflowX: "auto" }}>
             <table className="data-table">
               <thead>
@@ -688,6 +740,78 @@ export default function AdminDashboardPage() {
               </tbody>
             </table>
           </div>
+          )}
+        </div>
+      )}
+
+      {/* TAB: REGISTERED BUYERS */}
+      {activeTab === "buyers" && (
+        <div className="panel">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem", flexWrap: "wrap", gap: "10px" }}>
+            <div>
+              <h2 style={{ fontSize: "1.3rem", fontWeight: 800, color: "var(--primary)" }}>
+                Registered Buyers
+              </h2>
+              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
+                All customer accounts who have registered on SokoLink.
+              </p>
+            </div>
+            <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "var(--primary)" }}>
+              Total Buyers: {buyers.length}
+            </div>
+          </div>
+
+          {buyers.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "3rem 2rem", color: "var(--text-muted)" }}>
+              <div style={{ fontSize: "2.5rem", marginBottom: "10px" }}>👥</div>
+              <p style={{ fontWeight: 700 }}>No buyers have registered yet.</p>
+              <p style={{ fontSize: "0.85rem", marginTop: "6px" }}>Buyer accounts will appear here once customers sign up and place orders.</p>
+            </div>
+          ) : (
+            <div style={{ overflowX: "auto" }}>
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Location</th>
+                    <th>Joined</th>
+                    <th>Orders</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {buyers.map((u) => {
+                    const buyerOrders = orders.filter(
+                      (o) => o.buyerId === u.id || o.buyerEmail === u.email
+                    );
+                    return (
+                      <tr key={u.id}>
+                        <td>
+                          <strong>{u.name}</strong>
+                          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>ID: {u.id}</div>
+                        </td>
+                        <td>{u.email}</td>
+                        <td>{u.phone}</td>
+                        <td>
+                          <div style={{ fontSize: "0.82rem" }}>
+                            📍 {u.location?.estate}, {u.location?.town}
+                            <div style={{ fontSize: "0.76rem", color: "var(--text-muted)" }}>{u.location?.county} County</div>
+                          </div>
+                        </td>
+                        <td>{u.createdAt}</td>
+                        <td>
+                          <span style={{ fontWeight: 800, color: buyerOrders.length > 0 ? "var(--primary)" : "var(--text-muted)" }}>
+                            {buyerOrders.length} order{buyerOrders.length !== 1 ? "s" : ""}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
     </div>

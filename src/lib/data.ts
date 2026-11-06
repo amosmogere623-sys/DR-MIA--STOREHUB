@@ -1,419 +1,109 @@
-import { Product, Order, Vendor, CartItem, AdminTreasury, KenyaLocation } from "../types";
+import { Product, Order, Vendor, CartItem, AdminTreasury, KenyaLocation, UserProfile } from "../types";
 
-export const INITIAL_PRODUCTS: Product[] = [
-  // ── Bags & Totes ──────────────────────────────────────────────
-  {
-    id: "mia-1",
-    name: "SokoLink Quilted Shoulder Tote Bag",
-    description: "Lightweight quilted shoulder bag with zipper and inner pocket. Water-resistant and easy to carry.",
-    price: 450,
-    unit: "pc",
-    category: "Bags & Totes",
-    image: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-vender44",
-    vendorName: "SokoLink Store - Mwembe Branch",
-    stallLocation: "Shop 14, Mwembe Plaza, Opposite Main Stage",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Mwembe" },
-    inStock: true, stockQuantity: 45, rating: 4.9, badge: "In Mwembe", isPromoted: true, tokensSpent: 50,
-  },
-  {
-    id: "mia-7",
-    name: "Crossbody Small Sling Pouch",
-    description: "Compact sling bag for phone, keys, and money. Adjustable strap.",
-    price: 350,
-    unit: "pc",
-    category: "Bags & Totes",
-    image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-daraja",
-    vendorName: "Daraja Mbili Footwear",
-    stallLocation: "Stall D-08, Daraja Mbili Market",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Daraja Mbili" },
-    inStock: true, stockQuantity: 30, rating: 4.7,
-  },
-  {
-    id: "mia-9",
-    name: "Classic Leather Handbag",
-    description: "Genuine leather ladies handbag with gold zip and wide carry handles. Fits A4 documents.",
-    price: 1200,
-    unit: "pc",
-    category: "Bags & Totes",
-    image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-vender44",
-    vendorName: "SokoLink Store - Mwembe Branch",
-    stallLocation: "Shop 14, Mwembe Plaza, Opposite Main Stage",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Mwembe" },
-    inStock: true, stockQuantity: 15, rating: 4.9, badge: "Premium",
-  },
-  {
-    id: "mia-10",
-    name: "Large Travel Backpack",
-    description: "Water-resistant travel backpack with laptop compartment and USB charging port. 35L capacity.",
-    price: 950,
-    unit: "pc",
-    category: "Bags & Totes",
-    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-milimani",
-    vendorName: "Milimani Baby Shop",
-    stallLocation: "Citadel Mall, 1st Floor, Milimani",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Milimani" },
-    inStock: true, stockQuantity: 20, rating: 4.6, badge: "Travel",
-  },
-  {
-    id: "mia-11",
-    name: "School Bag for Kids",
-    description: "Durable cartoon print school bag with padded back and multiple pockets. Fits grades 1–8.",
-    price: 480,
-    unit: "pc",
-    category: "Bags & Totes",
-    image: "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-daraja",
-    vendorName: "Daraja Mbili Footwear",
-    stallLocation: "Stall D-08, Daraja Mbili Market",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Daraja Mbili" },
-    inStock: true, stockQuantity: 35, rating: 4.8, badge: "School",
-  },
+// Empty initial arrays — NO DEMO PRODUCTS OR VENDORS
+export const INITIAL_PRODUCTS: Product[] = [];
+export const INITIAL_VENDORS: Vendor[] = [];
 
-  // ── Pillows & Bedding ─────────────────────────────────────────
-  {
-    id: "mia-2",
-    name: "Deep Sleep Comfort Pillow",
-    description: "Soft micro-fiber sleeping pillow with breathable cotton cover. Good neck support.",
-    price: 650,
-    unit: "pc",
-    category: "Pillows & Bedding",
-    image: "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-vender44",
-    vendorName: "SokoLink Store - Mwembe Branch",
-    stallLocation: "Shop 14, Mwembe Plaza, Opposite Main Stage",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Mwembe" },
-    inStock: true, stockQuantity: 30, rating: 5.0, badge: "Top Seller", isPromoted: true, tokensSpent: 40,
-  },
-  {
-    id: "mia-12",
-    name: "Colourful Throw Pillow Set (2 pcs)",
-    description: "Decorative square throw pillows in bold colours. Great for sofas and bedrooms.",
-    price: 750,
-    unit: "set",
-    category: "Pillows & Bedding",
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-milimani",
-    vendorName: "Milimani Baby Shop",
-    stallLocation: "Citadel Mall, 1st Floor, Milimani",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Milimani" },
-    inStock: true, stockQuantity: 18, rating: 4.7, badge: "Home Decor",
-  },
-  {
-    id: "mia-13",
-    name: "Cotton Bed Sheet Set (King)",
-    description: "100% cotton fitted sheet, flat sheet, and 2 pillowcases. Soft, cool, and easy to wash.",
-    price: 1400,
-    unit: "set",
-    category: "Pillows & Bedding",
-    image: "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-vender44",
-    vendorName: "SokoLink Store - Mwembe Branch",
-    stallLocation: "Shop 14, Mwembe Plaza, Opposite Main Stage",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Mwembe" },
-    inStock: true, stockQuantity: 12, rating: 4.9, badge: "King Size",
-  },
-  {
-    id: "mia-14",
-    name: "Warm Winter Duvet (6kg)",
-    description: "Heavy 6kg duvet filled with hollow fibre for cold Kisii nights. Machine washable cover.",
-    price: 1800,
-    unit: "pc",
-    category: "Pillows & Bedding",
-    image: "https://images.unsplash.com/photo-1631049552057-403cdb8f0658?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-daraja",
-    vendorName: "Daraja Mbili Footwear",
-    stallLocation: "Stall D-08, Daraja Mbili Market",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Daraja Mbili" },
-    inStock: true, stockQuantity: 8, rating: 4.8, badge: "Warm",
-  },
+// Storage keys
+const PRODUCTS_KEY = "sokolink_v4_products";
+const VENDORS_KEY = "sokolink_v4_vendors";
+const ORDERS_KEY = "sokolink_v4_orders";
+const CART_KEY = "sokolink_v4_cart";
+const TREASURY_KEY = "sokolink_v4_treasury";
+const MIGRATION_FLAG = "sokolink_v4_migrated";
 
-  // ── Plushies & Toys ───────────────────────────────────────────
-  {
-    id: "mia-5",
-    name: "Cuddle Soft Teddy Bear",
-    description: "Soft velvet teddy bear toy, clean and safe for children and gifts.",
-    price: 550,
-    unit: "pc",
-    category: "Plushies & Toys",
-    image: "https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-vender44",
-    vendorName: "SokoLink Store - Mwembe Branch",
-    stallLocation: "Shop 14, Mwembe Plaza, Opposite Main Stage",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Mwembe" },
-    inStock: true, stockQuantity: 40, rating: 5.0, badge: "Gift Choice",
-  },
-  {
-    id: "mia-15",
-    name: "Giant Stuffed Elephant",
-    description: "Big soft grey elephant with embroidered eyes. 60 cm tall, non-toxic stuffing. Perfect gift.",
-    price: 850,
-    unit: "pc",
-    category: "Plushies & Toys",
-    image: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-milimani",
-    vendorName: "Milimani Baby Shop",
-    stallLocation: "Citadel Mall, 1st Floor, Milimani",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Milimani" },
-    inStock: true, stockQuantity: 22, rating: 4.9, badge: "Giant",
-  },
-  {
-    id: "mia-16",
-    name: "Family Board Game (Ludo & Snake)",
-    description: "Classic family board game set with ludo, snake & ladders, and cards. Fun for all ages.",
-    price: 450,
-    unit: "set",
-    category: "Plushies & Toys",
-    image: "https://images.unsplash.com/photo-1611996575749-79a3a250f948?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-daraja",
-    vendorName: "Daraja Mbili Footwear",
-    stallLocation: "Stall D-08, Daraja Mbili Market",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Daraja Mbili" },
-    inStock: true, stockQuantity: 25, rating: 4.7, badge: "Family Fun",
-  },
-  {
-    id: "mia-17",
-    name: "Kids Puzzle Set (200 pcs)",
-    description: "Colourful 200-piece puzzle with African wildlife images. Builds focus and creativity.",
-    price: 350,
-    unit: "pc",
-    category: "Plushies & Toys",
-    image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-vender44",
-    vendorName: "SokoLink Store - Mwembe Branch",
-    stallLocation: "Shop 14, Mwembe Plaza, Opposite Main Stage",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Mwembe" },
-    inStock: true, stockQuantity: 30, rating: 4.6, badge: "Educational",
-  },
-
-  // ── Care & Beauty ─────────────────────────────────────────────
-  {
-    id: "mia-6",
-    name: "SokoLink Gentle Facial Cleanser (150ml)",
-    description: "Daily foaming face wash with aloe vera and vitamin E. Cleans without drying the face.",
-    price: 300,
-    unit: "bottle",
-    category: "Care & Beauty",
-    image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-vender44",
-    vendorName: "SokoLink Store - Mwembe Branch",
-    stallLocation: "Shop 14, Mwembe Plaza, Opposite Main Stage",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Mwembe" },
-    inStock: true, stockQuantity: 50, rating: 4.9, badge: "Skincare",
-  },
-  {
-    id: "mia-8",
-    name: "Soft Eye Sleep Mask & Hair Band",
-    description: "Smooth silk eye mask for night rest and travel.",
-    price: 150,
-    unit: "set",
-    category: "Care & Beauty",
-    image: "https://images.unsplash.com/photo-1585232004423-244e0e6904e3?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-vender44",
-    vendorName: "SokoLink Store - Mwembe Branch",
-    stallLocation: "Shop 14, Mwembe Plaza, Opposite Main Stage",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Mwembe" },
-    inStock: true, stockQuantity: 70, rating: 4.8,
-  },
-  {
-    id: "mia-18",
-    name: "Cocoa Butter Body Lotion (400ml)",
-    description: "Rich cocoa butter lotion that keeps skin smooth and moisturised all day. No greasy feel.",
-    price: 280,
-    unit: "bottle",
-    category: "Care & Beauty",
-    image: "https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-milimani",
-    vendorName: "Milimani Baby Shop",
-    stallLocation: "Citadel Mall, 1st Floor, Milimani",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Milimani" },
-    inStock: true, stockQuantity: 40, rating: 4.8, badge: "Moisturiser",
-  },
-  {
-    id: "mia-19",
-    name: "Lip Balm & Gloss Set (5 pcs)",
-    description: "Set of 5 fruity flavoured lip balms in a cute carry pouch. Long-lasting moisture.",
-    price: 200,
-    unit: "set",
-    category: "Care & Beauty",
-    image: "https://images.unsplash.com/photo-1512207736890-6ffed8a84e8d?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-daraja",
-    vendorName: "Daraja Mbili Footwear",
-    stallLocation: "Stall D-08, Daraja Mbili Market",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Daraja Mbili" },
-    inStock: true, stockQuantity: 60, rating: 4.7, badge: "Lip Care",
-  },
-  {
-    id: "mia-20",
-    name: "Brightening Face Cream (50ml)",
-    description: "Lightweight face cream with turmeric and shea butter. Fades dark spots and brightens skin.",
-    price: 420,
-    unit: "jar",
-    category: "Care & Beauty",
-    image: "https://images.unsplash.com/photo-1591019479261-1a103585c559?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-vender44",
-    vendorName: "SokoLink Store - Mwembe Branch",
-    stallLocation: "Shop 14, Mwembe Plaza, Opposite Main Stage",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Mwembe" },
-    inStock: true, stockQuantity: 35, rating: 4.9, badge: "Brightening",
-  },
-
-  // ── Shoes & Clothes ───────────────────────────────────────────
-  {
-    id: "mia-3",
-    name: "Cushioned Slip-on Slides",
-    description: "Thick soft foam indoor and outdoor slides. Non-slip sole for daily comfort.",
-    price: 350,
-    unit: "pair",
-    category: "Shoes & Clothes",
-    image: "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-daraja",
-    vendorName: "Daraja Mbili Footwear",
-    stallLocation: "Stall D-08, Daraja Mbili Market",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Daraja Mbili" },
-    inStock: true, stockQuantity: 60, rating: 4.8, badge: "Nearby",
-  },
-  {
-    id: "mia-4",
-    name: "Baby Warm Cotton Romper & Cap",
-    description: "Warm soft cotton baby clothes with snap buttons. Gentle on sensitive skin.",
-    price: 400,
-    unit: "set",
-    category: "Shoes & Clothes",
-    image: "https://images.unsplash.com/photo-1522771930-78848d9293e8?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-milimani",
-    vendorName: "Milimani Baby Shop",
-    stallLocation: "Citadel Mall, 1st Floor, Milimani",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Milimani" },
-    inStock: true, stockQuantity: 25, rating: 4.9, badge: "Baby Care",
-  },
-  {
-    id: "mia-21",
-    name: "Ladies Flat Sandals",
-    description: "Comfortable flat sandals with cushioned insole. Available in black and brown. Sizes 36–42.",
-    price: 580,
-    unit: "pair",
-    category: "Shoes & Clothes",
-    image: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-daraja",
-    vendorName: "Daraja Mbili Footwear",
-    stallLocation: "Stall D-08, Daraja Mbili Market",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Daraja Mbili" },
-    inStock: true, stockQuantity: 28, rating: 4.8, badge: "Ladies",
-  },
-  {
-    id: "mia-22",
-    name: "Kids School Shoes (Sizes 28–36)",
-    description: "Durable black school shoes with hard sole. Easy lace-up closure. Long lasting leather upper.",
-    price: 650,
-    unit: "pair",
-    category: "Shoes & Clothes",
-    image: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-milimani",
-    vendorName: "Milimani Baby Shop",
-    stallLocation: "Citadel Mall, 1st Floor, Milimani",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Milimani" },
-    inStock: true, stockQuantity: 32, rating: 4.7, badge: "School",
-  },
-  {
-    id: "mia-23",
-    name: "Men's Lightweight Windbreaker Jacket",
-    description: "Thin but warm windbreaker jacket. Great for Kisii mornings and evenings. Sizes S–XL.",
-    price: 1100,
-    unit: "pc",
-    category: "Shoes & Clothes",
-    image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&auto=format&fit=crop&q=80",
-    vendorId: "v-vender44",
-    vendorName: "SokoLink Store - Mwembe Branch",
-    stallLocation: "Shop 14, Mwembe Plaza, Opposite Main Stage",
-    location: { county: "Kisii", town: "Kisii Town", estate: "Mwembe" },
-    inStock: true, stockQuantity: 18, rating: 4.8, badge: "Jacket",
-  },
-];
-
-export const INITIAL_VENDORS: Vendor[] = [
-  {
-    id: "v-vender44",
-    name: "SokoLink Vendor",
-    businessName: "SokoLink Store - Mwembe Branch",
-    stallNumber: "Shop 14, Mwembe Plaza",
-    phone: "0712 998 877",
-    email: "vender44@gmail.com",
-    category: "Bags, Clothes & Living",
-    location: {
-      county: "Kisii",
-      town: "Kisii Town",
-      estate: "Mwembe",
-    },
-    businessRegistrationNumber: "BN-KS-2024-90214",
-    verificationStatus: "Verified",
-    walletBalance: 8500,
-    tokenBalance: 80,
-    mpesaNumber: "0712998877",
-    status: "Approved",
-    joinedDate: "2026-02-14",
-  },
-  {
-    id: "v-daraja",
-    name: "Amina Hassan",
-    businessName: "Daraja Mbili Footwear",
-    stallNumber: "Stall D-08, Daraja Mbili",
-    phone: "0722 887 766",
-    email: "amina@kisiistore.com",
-    category: "Shoes & Slippers",
-    location: {
-      county: "Kisii",
-      town: "Kisii Town",
-      estate: "Daraja Mbili",
-    },
-    businessRegistrationNumber: "BN-KS-2025-41002",
-    verificationStatus: "Verified",
-    walletBalance: 3200,
-    tokenBalance: 40,
-    mpesaNumber: "0722887766",
-    status: "Approved",
-    joinedDate: "2026-04-10",
-  },
-  {
-    id: "v-milimani",
-    name: "Peter Nyachae",
-    businessName: "Milimani Baby Shop",
-    stallNumber: "Citadel Mall, 1st Floor",
-    phone: "0733 445 566",
-    email: "milimani@kisiistore.com",
-    category: "Baby Clothes & Toys",
-    location: {
-      county: "Kisii",
-      town: "Kisii Town",
-      estate: "Milimani",
-    },
-    businessRegistrationNumber: "BN-KS-2025-88319",
-    verificationStatus: "Verified",
-    walletBalance: 2100,
-    tokenBalance: 20,
-    mpesaNumber: "0733445566",
-    status: "Approved",
-    joinedDate: "2026-06-01",
-  },
-];
-
-export function getStoredProducts(): Product[] {
-  if (typeof window === "undefined") return INITIAL_PRODUCTS;
+// Purge any legacy demo data from client localStorage on first load
+function runLegacyCleanup(): void {
+  if (typeof window === "undefined") return;
   try {
-    const data = localStorage.getItem("drmia_v3_products");
+    if (localStorage.getItem(MIGRATION_FLAG) !== "true") {
+      // Remove all legacy keys
+      localStorage.removeItem("drmia_v3_products");
+      localStorage.removeItem("drmia_v3_vendors");
+      localStorage.removeItem("drmia_v3_orders");
+      localStorage.removeItem("drmia_v3_treasury");
+      localStorage.removeItem("drmia_v3_cart");
+      localStorage.removeItem("drmia_orders");
+      localStorage.removeItem("drmia_vendors");
+      localStorage.removeItem("drmia_products");
+      localStorage.removeItem("sokolink_users");
+      localStorage.setItem(MIGRATION_FLAG, "true");
+    }
+  } catch (e) {
+    // Ignore storage errors
+  }
+}
+
+// ── SYNC ENGINE: Pulls live shared state from Next.js server API ──────────────
+let isSyncing = false;
+export async function syncAllFromServer(): Promise<void> {
+  if (typeof window === "undefined" || isSyncing) return;
+  isSyncing = true;
+  runLegacyCleanup();
+
+  try {
+    // Fetch products, vendors, orders, and treasury in parallel
+    const [prodRes, vendRes, ordRes, treasRes] = await Promise.allSettled([
+      fetch("/api/products", { cache: "no-store" }),
+      fetch("/api/vendors", { cache: "no-store" }),
+      fetch("/api/orders", { cache: "no-store" }),
+      fetch("/api/treasury", { cache: "no-store" }),
+    ]);
+
+    if (prodRes.status === "fulfilled" && prodRes.value.ok) {
+      const data = await prodRes.value.json();
+      if (data.success && Array.isArray(data.products)) {
+        localStorage.setItem(PRODUCTS_KEY, JSON.stringify(data.products));
+        window.dispatchEvent(new Event("productsUpdated"));
+      }
+    }
+
+    if (vendRes.status === "fulfilled" && vendRes.value.ok) {
+      const data = await vendRes.value.json();
+      if (data.success && Array.isArray(data.vendors)) {
+        localStorage.setItem(VENDORS_KEY, JSON.stringify(data.vendors));
+        window.dispatchEvent(new Event("vendorsUpdated"));
+      }
+    }
+
+    if (ordRes.status === "fulfilled" && ordRes.value.ok) {
+      const data = await ordRes.value.json();
+      if (data.success && Array.isArray(data.orders)) {
+        localStorage.setItem(ORDERS_KEY, JSON.stringify(data.orders));
+        window.dispatchEvent(new Event("ordersUpdated"));
+      }
+    }
+
+    if (treasRes.status === "fulfilled" && treasRes.value.ok) {
+      const data = await treasRes.value.json();
+      if (data.success && data.treasury) {
+        localStorage.setItem(TREASURY_KEY, JSON.stringify(data.treasury));
+        window.dispatchEvent(new Event("treasuryUpdated"));
+      }
+    }
+  } catch (err) {
+    console.error("syncAllFromServer error:", err);
+  } finally {
+    isSyncing = false;
+  }
+}
+
+// ── PRODUCTS ────────────────────────────────────────────────────────────────
+export function getStoredProducts(): Product[] {
+  if (typeof window === "undefined") return [];
+  runLegacyCleanup();
+  try {
+    const data = localStorage.getItem(PRODUCTS_KEY);
     if (data) return JSON.parse(data);
-    localStorage.setItem("drmia_v3_products", JSON.stringify(INITIAL_PRODUCTS));
   } catch (e) {
     console.error(e);
   }
-  return INITIAL_PRODUCTS;
+  return [];
 }
 
 export function saveProduct(product: Product): void {
   if (typeof window === "undefined") return;
+  runLegacyCleanup();
   const products = getStoredProducts();
   const index = products.findIndex((p) => p.id === product.id);
   if (index >= 0) {
@@ -421,7 +111,46 @@ export function saveProduct(product: Product): void {
   } else {
     products.unshift(product);
   }
-  localStorage.setItem("drmia_v3_products", JSON.stringify(products));
+  localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
+  window.dispatchEvent(new Event("productsUpdated"));
+
+  // Sync to server so all other devices receive this product
+  fetch("/api/products", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(product),
+  }).catch((e) => console.error("Error saving product to server:", e));
+}
+
+export function deleteProduct(productId: string): void {
+  if (typeof window === "undefined") return;
+  const products = getStoredProducts().filter((p) => p.id !== productId);
+  localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
+  window.dispatchEvent(new Event("productsUpdated"));
+
+  fetch(`/api/products?id=${encodeURIComponent(productId)}`, {
+    method: "DELETE",
+  }).catch((e) => console.error("Error deleting product on server:", e));
+}
+
+export function toggleProductInStock(productId: string): boolean {
+  if (typeof window === "undefined") return false;
+  const products = getStoredProducts();
+  const prod = products.find((p) => p.id === productId);
+  if (prod) {
+    prod.inStock = !prod.inStock;
+    localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
+    window.dispatchEvent(new Event("productsUpdated"));
+
+    fetch("/api/products", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: productId }),
+    }).catch((e) => console.error("Error updating stock on server:", e));
+
+    return prod.inStock;
+  }
+  return false;
 }
 
 export function getSortedProductsByProximity(userLoc?: KenyaLocation): Product[] {
@@ -460,7 +189,7 @@ export function boostProductWithTokens(productId: string, vendorId: string, toke
   if (!vendor || vendor.tokenBalance < tokens) return false;
 
   vendor.tokenBalance -= tokens;
-  localStorage.setItem("drmia_v3_vendors", JSON.stringify(vendors));
+  localStorage.setItem(VENDORS_KEY, JSON.stringify(vendors));
 
   const products = getStoredProducts();
   const prod = products.find((p) => p.id === productId);
@@ -468,16 +197,313 @@ export function boostProductWithTokens(productId: string, vendorId: string, toke
     prod.isPromoted = true;
     prod.tokensSpent = (prod.tokensSpent || 0) + tokens;
     prod.badge = "⭐ PROMOTED";
-    localStorage.setItem("drmia_v3_products", JSON.stringify(products));
+    localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
+    saveProduct(prod);
   }
   window.dispatchEvent(new Event("productsUpdated"));
   return true;
 }
 
+// ── VENDORS ─────────────────────────────────────────────────────────────────
+export function getStoredVendors(): Vendor[] {
+  if (typeof window === "undefined") return [];
+  runLegacyCleanup();
+  try {
+    const data = localStorage.getItem(VENDORS_KEY);
+    if (data) return JSON.parse(data);
+  } catch (e) {
+    console.error(e);
+  }
+  return [];
+}
+
+export function saveVendor(vendor: Vendor): void {
+  if (typeof window === "undefined") return;
+  runLegacyCleanup();
+  const vendors = getStoredVendors();
+  const index = vendors.findIndex((v) => v.id === vendor.id);
+  if (index >= 0) {
+    vendors[index] = vendor;
+  } else {
+    vendors.unshift(vendor);
+  }
+  localStorage.setItem(VENDORS_KEY, JSON.stringify(vendors));
+  window.dispatchEvent(new Event("vendorsUpdated"));
+
+  // Send to server so all devices and admin see this vendor
+  fetch("/api/vendors", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(vendor),
+  }).catch((e) => console.error("Error saving vendor to server:", e));
+}
+
+export function updateVendorStatus(vendorId: string, status: Vendor["status"]): void {
+  if (typeof window === "undefined") return;
+  const vendors = getStoredVendors();
+  const vendor = vendors.find((v) => v.id === vendorId);
+  if (vendor) {
+    vendor.status = status;
+    localStorage.setItem(VENDORS_KEY, JSON.stringify(vendors));
+    window.dispatchEvent(new Event("vendorsUpdated"));
+
+    fetch("/api/vendors", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: vendorId, status }),
+    }).catch((e) => console.error("Error updating vendor on server:", e));
+  }
+}
+
+export function verifyVendorShop(vendorId: string, status: "Verified" | "Rejected"): void {
+  if (typeof window === "undefined") return;
+  const vendors = getStoredVendors();
+  const vendor = vendors.find((v) => v.id === vendorId);
+  if (vendor) {
+    vendor.verificationStatus = status;
+    localStorage.setItem(VENDORS_KEY, JSON.stringify(vendors));
+    window.dispatchEvent(new Event("vendorsUpdated"));
+
+    fetch("/api/vendors", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: vendorId, verificationStatus: status }),
+    }).catch((e) => console.error("Error verifying vendor on server:", e));
+  }
+}
+
+// ── ORDERS ──────────────────────────────────────────────────────────────────
+export function getStoredOrders(): Order[] {
+  if (typeof window === "undefined") return [];
+  runLegacyCleanup();
+  try {
+    const data = localStorage.getItem(ORDERS_KEY);
+    if (data) return JSON.parse(data);
+  } catch (e) {
+    console.error(e);
+  }
+  return [];
+}
+
+export function saveOrder(order: Order): void {
+  if (typeof window === "undefined") return;
+  runLegacyCleanup();
+  const orders = getStoredOrders();
+  orders.unshift(order);
+  localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+  window.dispatchEvent(new Event("ordersUpdated"));
+
+  // Send to server so admin and vendor dashboards receive it immediately
+  fetch("/api/orders", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(order),
+  }).catch((e) => console.error("Error saving order to server:", e));
+}
+
+export function updateOrderStatus(orderId: string, status: Order["orderStatus"]): void {
+  if (typeof window === "undefined") return;
+  const orders = getStoredOrders();
+  const order = orders.find((o) => o.id === orderId);
+  if (order) {
+    order.orderStatus = status;
+    localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+    window.dispatchEvent(new Event("ordersUpdated"));
+
+    fetch("/api/orders", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: orderId, orderStatus: status }),
+    }).catch((e) => console.error("Error updating order on server:", e));
+  }
+}
+
+export function releaseEscrowWithKey(
+  orderId: string,
+  enteredKey: string
+): { success: boolean; message: string; vendorAmount?: number; commission?: number } {
+  if (typeof window === "undefined") return { success: false, message: "Window unavailable" };
+  const orders = getStoredOrders();
+  const order = orders.find((o) => o.id === orderId);
+
+  if (!order) {
+    return { success: false, message: "Order not found." };
+  }
+
+  if (order.escrowStatus === "RELEASED_TO_VENDOR") {
+    return { success: false, message: "Escrow funds have already been released for this order." };
+  }
+
+  if (order.escrowReleaseKey.trim().toUpperCase() !== enteredKey.trim().toUpperCase()) {
+    return { success: false, message: "Invalid Pickup Code! Please check with customer." };
+  }
+
+  order.escrowStatus = "RELEASED_TO_VENDOR";
+  order.orderStatus = "Delivered";
+  order.escrowReleasedAt = new Date().toISOString().replace("T", " ").substring(0, 16);
+  localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+
+  const vendors = getStoredVendors();
+  const vendor = vendors.find((v) => v.id === order.items[0]?.vendorId) || vendors[0];
+  if (vendor) {
+    vendor.walletBalance = (vendor.walletBalance || 0) + order.vendorPayoutAmount;
+    localStorage.setItem(VENDORS_KEY, JSON.stringify(vendors));
+  }
+
+  const treasury = getAdminTreasury();
+  treasury.commissionBalance = (treasury.commissionBalance || 0) + order.platformCommission;
+  saveAdminTreasury(treasury);
+
+  window.dispatchEvent(new Event("ordersUpdated"));
+  window.dispatchEvent(new Event("vendorsUpdated"));
+  window.dispatchEvent(new Event("treasuryUpdated"));
+
+  // Send release to server
+  fetch("/api/orders/release", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ orderId, key: enteredKey, action: "vendorKey" }),
+  }).catch((e) => console.error("Error syncing release to server:", e));
+
+  return {
+    success: true,
+    message: `Verified! KSh ${order.vendorPayoutAmount.toLocaleString()} released to vendor. 10% fee (KSh ${order.platformCommission.toLocaleString()}) recorded.`,
+    vendorAmount: order.vendorPayoutAmount,
+    commission: order.platformCommission,
+  };
+}
+
+export function buyerAcceptAndReleaseEscrow(
+  orderId: string
+): { success: boolean; message: string; vendorAmount?: number; commission?: number } {
+  if (typeof window === "undefined") return { success: false, message: "Window unavailable" };
+  const orders = getStoredOrders();
+  const order = orders.find((o) => o.id === orderId);
+
+  if (!order) {
+    return { success: false, message: "Order not found." };
+  }
+
+  if (order.escrowStatus === "RELEASED_TO_VENDOR") {
+    return { success: false, message: "Payment has already been released to the vendor." };
+  }
+
+  order.buyerReleasedPayment = true;
+  order.escrowStatus = "RELEASED_TO_VENDOR";
+  order.orderStatus = "Delivered";
+  order.escrowReleasedAt = new Date().toISOString().replace("T", " ").substring(0, 16);
+  localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+
+  const vendors = getStoredVendors();
+  const vendor = vendors.find((v) => v.id === order.items[0]?.vendorId) || vendors[0];
+  if (vendor) {
+    vendor.walletBalance = (vendor.walletBalance || 0) + order.vendorPayoutAmount;
+    localStorage.setItem(VENDORS_KEY, JSON.stringify(vendors));
+  }
+
+  const treasury = getAdminTreasury();
+  treasury.commissionBalance = (treasury.commissionBalance || 0) + order.platformCommission;
+  saveAdminTreasury(treasury);
+
+  window.dispatchEvent(new Event("ordersUpdated"));
+  window.dispatchEvent(new Event("vendorsUpdated"));
+  window.dispatchEvent(new Event("treasuryUpdated"));
+
+  // Send release to server
+  fetch("/api/orders/release", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ orderId, action: "buyerConfirm" }),
+  }).catch((e) => console.error("Error syncing buyer confirm to server:", e));
+
+  return {
+    success: true,
+    message: `Order confirmed! KSh ${order.vendorPayoutAmount.toLocaleString()} released to vendor.`,
+    vendorAmount: order.vendorPayoutAmount,
+    commission: order.platformCommission,
+  };
+}
+
+export function vendorMarkOrderPickedUp(orderId: string): { success: boolean; message: string } {
+  if (typeof window === "undefined") return { success: false, message: "Window unavailable" };
+  const orders = getStoredOrders();
+  const order = orders.find((o) => o.id === orderId);
+  if (!order) return { success: false, message: "Order not found" };
+
+  order.vendorMarkedPickedUp = true;
+  order.orderStatus = "Ready for Pickup";
+  localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+  window.dispatchEvent(new Event("ordersUpdated"));
+
+  fetch("/api/orders", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: orderId, orderStatus: "Ready for Pickup" }),
+  }).catch((e) => console.error("Error updating order picked up on server:", e));
+
+  return {
+    success: true,
+    message: "Item marked ready for pickup.",
+  };
+}
+
+// ── TREASURY ────────────────────────────────────────────────────────────────
+export function getAdminTreasury(): AdminTreasury {
+  const defaultTreasury: AdminTreasury = {
+    commissionBalance: 0,
+    totalWithdrawn: 0,
+    adminMpesaNumber: "0711 000 999",
+  };
+
+  if (typeof window === "undefined") return defaultTreasury;
+  runLegacyCleanup();
+  try {
+    const data = localStorage.getItem(TREASURY_KEY);
+    if (data) return JSON.parse(data);
+  } catch (e) {
+    console.error(e);
+  }
+  return defaultTreasury;
+}
+
+export function saveAdminTreasury(treasury: AdminTreasury): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(TREASURY_KEY, JSON.stringify(treasury));
+  window.dispatchEvent(new Event("treasuryUpdated"));
+}
+
+export function withdrawAdminCommission(
+  amount: number,
+  mpesaPhone: string
+): { success: boolean; message: string } {
+  const treasury = getAdminTreasury();
+  if (amount <= 0 || amount > treasury.commissionBalance) {
+    return { success: false, message: "Amount is more than available balance." };
+  }
+
+  treasury.commissionBalance -= amount;
+  treasury.totalWithdrawn += amount;
+  treasury.lastWithdrawalDate = new Date().toISOString().split("T")[0];
+  treasury.adminMpesaNumber = mpesaPhone;
+  saveAdminTreasury(treasury);
+
+  fetch("/api/treasury", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ amount, phone: mpesaPhone }),
+  }).catch((e) => console.error("Error syncing withdrawal to server:", e));
+
+  return {
+    success: true,
+    message: `KSh ${amount.toLocaleString()} sent to Admin M-Pesa (${mpesaPhone}) successfully!`,
+  };
+}
+
+// ── CART ────────────────────────────────────────────────────────────────────
 export function getStoredCart(): CartItem[] {
   if (typeof window === "undefined") return [];
   try {
-    const data = localStorage.getItem("drmia_v3_cart");
+    const data = localStorage.getItem(CART_KEY);
     return data ? JSON.parse(data) : [];
   } catch (e) {
     return [];
@@ -486,7 +512,7 @@ export function getStoredCart(): CartItem[] {
 
 export function saveCart(cart: CartItem[]): void {
   if (typeof window === "undefined") return;
-  localStorage.setItem("drmia_v3_cart", JSON.stringify(cart));
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
   window.dispatchEvent(new Event("cartUpdated"));
 }
 
@@ -521,300 +547,6 @@ export function updateCartQuantity(productId: string, quantity: number): void {
 
 export function clearCart(): void {
   if (typeof window === "undefined") return;
-  localStorage.removeItem("drmia_v3_cart");
+  localStorage.removeItem(CART_KEY);
   window.dispatchEvent(new Event("cartUpdated"));
-}
-
-export function getStoredOrders(): Order[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const data = localStorage.getItem("drmia_v3_orders");
-    if (data) return JSON.parse(data);
-
-    const initialOrders: Order[] = [
-      {
-        id: "MIA-78219",
-        buyerId: "user-buyer23",
-        buyerName: "Buyer Account",
-        buyerPhone: "0722334455",
-        buyerEmail: "buyer23@gmail.com",
-        buyerLocation: {
-          county: "Kisii",
-          town: "Kisii Town",
-          estate: "Mwembe",
-        },
-        deliveryAddress: "Near Mwembe Stage, Gate 2, Kisii",
-        paymentMethod: "mpesa",
-        paymentStatus: "Paid",
-        orderStatus: "Ready for Pickup",
-        items: [
-          {
-            productId: "mia-1",
-            productName: "SokoLink Quilted Shoulder Tote Bag",
-            price: 450,
-            unit: "pc",
-            quantity: 1,
-            vendorId: "v-vender44",
-            vendorName: "SokoLink Store - Mwembe Branch",
-            vendorPhone: "0712 998 877",
-            vendorLocation: { county: "Kisii", town: "Kisii Town", estate: "Mwembe" },
-            stallLocation: "Shop 14, Mwembe Plaza, Opposite Main Stage",
-          },
-        ],
-        subtotal: 450,
-        deliveryFee: 50,
-        total: 500,
-        escrowStatus: "HELD_IN_ESCROW",
-        escrowReleaseKey: "ESC-SKL-849201",
-        vendorPayoutAmount: 450, // 90% of 500
-        platformCommission: 50,  // 10% of 500
-        unlockedVendorContacts: [
-          {
-            vendorName: "SokoLink Store - Mwembe Branch",
-            phone: "0712 998 877",
-            exactAddress: "Shop 14, Mwembe Plaza, Opposite Main Stage, Mwembe, Kisii",
-            gpsCoordinates: "-0.6773, 34.7796",
-          },
-        ],
-        fraudAnalysis: {
-          riskScore: 4,
-          riskLevel: "LOW",
-          flags: ["Normal transaction", "Verified M-Pesa account"],
-          recommendation: "APPROVE",
-          analyzedAt: "2026-11-05 10:15:00",
-        },
-        createdAt: "2026-11-05 10:15",
-      },
-    ];
-    localStorage.setItem("drmia_v3_orders", JSON.stringify(initialOrders));
-    return initialOrders;
-  } catch (e) {
-    return [];
-  }
-}
-
-export function saveOrder(order: Order): void {
-  if (typeof window === "undefined") return;
-  const orders = getStoredOrders();
-  orders.unshift(order);
-  localStorage.setItem("drmia_v3_orders", JSON.stringify(orders));
-  window.dispatchEvent(new Event("ordersUpdated"));
-}
-
-export function releaseEscrowWithKey(orderId: string, enteredKey: string): { success: boolean; message: string; vendorAmount?: number; commission?: number } {
-  if (typeof window === "undefined") return { success: false, message: "Window unavailable" };
-  const orders = getStoredOrders();
-  const order = orders.find((o) => o.id === orderId);
-
-  if (!order) {
-    return { success: false, message: "Order not found." };
-  }
-
-  if (order.escrowStatus === "RELEASED_TO_VENDOR") {
-    return { success: false, message: "Escrow funds have already been released for this order." };
-  }
-
-  if (order.escrowReleaseKey.trim().toUpperCase() !== enteredKey.trim().toUpperCase()) {
-    return { success: false, message: "Invalid Release Key! Please check with the buyer." };
-  }
-
-  order.escrowStatus = "RELEASED_TO_VENDOR";
-  order.orderStatus = "Delivered";
-  order.escrowReleasedAt = new Date().toISOString().replace("T", " ").substring(0, 16);
-  localStorage.setItem("drmia_v3_orders", JSON.stringify(orders));
-
-  const vendors = getStoredVendors();
-  const vendor = vendors.find((v) => v.id === order.items[0]?.vendorId) || vendors[0];
-  if (vendor) {
-    vendor.walletBalance = (vendor.walletBalance || 0) + order.vendorPayoutAmount;
-    localStorage.setItem("drmia_v3_vendors", JSON.stringify(vendors));
-  }
-
-  const treasury = getAdminTreasury();
-  treasury.commissionBalance = (treasury.commissionBalance || 0) + order.platformCommission;
-  saveAdminTreasury(treasury);
-
-  window.dispatchEvent(new Event("ordersUpdated"));
-  window.dispatchEvent(new Event("vendorsUpdated"));
-  window.dispatchEvent(new Event("treasuryUpdated"));
-
-  return {
-    success: true,
-    message: `Verified! KSh ${order.vendorPayoutAmount.toLocaleString()} (90%) released to vendor. 10% (KSh ${order.platformCommission.toLocaleString()}) commission kept in system.`,
-    vendorAmount: order.vendorPayoutAmount,
-    commission: order.platformCommission,
-  };
-}
-
-export function getAdminTreasury(): AdminTreasury {
-  const defaultTreasury: AdminTreasury = {
-    commissionBalance: 4200,
-    totalWithdrawn: 12000,
-    lastWithdrawalDate: "2026-11-03",
-    adminMpesaNumber: "0711 000 999",
-  };
-
-  if (typeof window === "undefined") return defaultTreasury;
-  try {
-    const data = localStorage.getItem("drmia_v3_treasury");
-    if (data) return JSON.parse(data);
-    localStorage.setItem("drmia_v3_treasury", JSON.stringify(defaultTreasury));
-  } catch (e) {
-    console.error(e);
-  }
-  return defaultTreasury;
-}
-
-export function saveAdminTreasury(treasury: AdminTreasury): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem("drmia_v3_treasury", JSON.stringify(treasury));
-  window.dispatchEvent(new Event("treasuryUpdated"));
-}
-
-export function withdrawAdminCommission(amount: number, mpesaPhone: string): { success: boolean; message: string } {
-  const treasury = getAdminTreasury();
-  if (amount <= 0 || amount > treasury.commissionBalance) {
-    return { success: false, message: "Amount is more than available commission balance." };
-  }
-
-  treasury.commissionBalance -= amount;
-  treasury.totalWithdrawn += amount;
-  treasury.lastWithdrawalDate = new Date().toISOString().split("T")[0];
-  treasury.adminMpesaNumber = mpesaPhone;
-  saveAdminTreasury(treasury);
-
-  return {
-    success: true,
-    message: `KSh ${amount.toLocaleString()} sent to Admin M-Pesa (${mpesaPhone}) successfully!`,
-  };
-}
-
-export function getStoredVendors(): Vendor[] {
-  if (typeof window === "undefined") return INITIAL_VENDORS;
-  try {
-    const data = localStorage.getItem("drmia_v3_vendors");
-    if (data) return JSON.parse(data);
-    localStorage.setItem("drmia_v3_vendors", JSON.stringify(INITIAL_VENDORS));
-  } catch (e) {
-    console.error(e);
-  }
-  return INITIAL_VENDORS;
-}
-
-export function saveVendor(vendor: Vendor): void {
-  if (typeof window === "undefined") return;
-  const vendors = getStoredVendors();
-  const index = vendors.findIndex((v) => v.id === vendor.id);
-  if (index >= 0) {
-    vendors[index] = vendor;
-  } else {
-    vendors.unshift(vendor);
-  }
-  localStorage.setItem("drmia_v3_vendors", JSON.stringify(vendors));
-  window.dispatchEvent(new Event("vendorsUpdated"));
-}
-
-export function updateOrderStatus(orderId: string, status: Order["orderStatus"]): void {
-  if (typeof window === "undefined") return;
-  const orders = getStoredOrders();
-  const order = orders.find((o) => o.id === orderId);
-  if (order) {
-    order.orderStatus = status;
-    localStorage.setItem("drmia_v3_orders", JSON.stringify(orders));
-    window.dispatchEvent(new Event("ordersUpdated"));
-  }
-}
-
-export function updateVendorStatus(vendorId: string, status: Vendor["status"]): void {
-  if (typeof window === "undefined") return;
-  const vendors = getStoredVendors();
-  const vendor = vendors.find((v) => v.id === vendorId);
-  if (vendor) {
-    vendor.status = status;
-    localStorage.setItem("drmia_v3_vendors", JSON.stringify(vendors));
-    window.dispatchEvent(new Event("vendorsUpdated"));
-  }
-}
-
-export function vendorMarkOrderPickedUp(orderId: string): { success: boolean; message: string } {
-  if (typeof window === "undefined") return { success: false, message: "Window unavailable" };
-  const orders = getStoredOrders();
-  const order = orders.find((o) => o.id === orderId);
-  if (!order) return { success: false, message: "Order not found" };
-
-  order.vendorMarkedPickedUp = true;
-  order.orderStatus = "Ready for Pickup";
-  localStorage.setItem("drmia_v3_orders", JSON.stringify(orders));
-  window.dispatchEvent(new Event("ordersUpdated"));
-
-  return {
-    success: true,
-    message: "Item marked as handed over/picked up. Funds will be released once buyer verifies and clicks Accept.",
-  };
-}
-
-export function buyerAcceptAndReleaseEscrow(orderId: string): { success: boolean; message: string; vendorAmount?: number; commission?: number } {
-  if (typeof window === "undefined") return { success: false, message: "Window unavailable" };
-  const orders = getStoredOrders();
-  const order = orders.find((o) => o.id === orderId);
-
-  if (!order) {
-    return { success: false, message: "Order not found." };
-  }
-
-  if (order.escrowStatus === "RELEASED_TO_VENDOR") {
-    return { success: false, message: "Payment has already been released to the vendor." };
-  }
-
-  order.buyerReleasedPayment = true;
-  order.escrowStatus = "RELEASED_TO_VENDOR";
-  order.orderStatus = "Delivered";
-  order.escrowReleasedAt = new Date().toISOString().replace("T", " ").substring(0, 16);
-  localStorage.setItem("drmia_v3_orders", JSON.stringify(orders));
-
-  const vendors = getStoredVendors();
-  const vendor = vendors.find((v) => v.id === order.items[0]?.vendorId) || vendors[0];
-  if (vendor) {
-    vendor.walletBalance = (vendor.walletBalance || 0) + order.vendorPayoutAmount;
-    localStorage.setItem("drmia_v3_vendors", JSON.stringify(vendors));
-  }
-
-  const treasury = getAdminTreasury();
-  treasury.commissionBalance = (treasury.commissionBalance || 0) + order.platformCommission;
-  saveAdminTreasury(treasury);
-
-  window.dispatchEvent(new Event("ordersUpdated"));
-  window.dispatchEvent(new Event("vendorsUpdated"));
-  window.dispatchEvent(new Event("treasuryUpdated"));
-
-  return {
-    success: true,
-    message: `Payment released! KSh ${order.vendorPayoutAmount.toLocaleString()} credited to vendor wallet. KSh ${order.platformCommission.toLocaleString()} service fee kept in system.`,
-    vendorAmount: order.vendorPayoutAmount,
-    commission: order.platformCommission,
-  };
-}
-
-export function toggleProductInStock(productId: string): boolean {
-  if (typeof window === "undefined") return false;
-  const products = getStoredProducts();
-  const prod = products.find((p) => p.id === productId);
-  if (prod) {
-    prod.inStock = !prod.inStock;
-    localStorage.setItem("drmia_v3_products", JSON.stringify(products));
-    window.dispatchEvent(new Event("productsUpdated"));
-    return prod.inStock;
-  }
-  return false;
-}
-
-export function verifyVendorShop(vendorId: string, status: "Verified" | "Rejected"): void {
-  if (typeof window === "undefined") return;
-  const vendors = getStoredVendors();
-  const vendor = vendors.find((v) => v.id === vendorId);
-  if (vendor) {
-    vendor.verificationStatus = status;
-    localStorage.setItem("drmia_v3_vendors", JSON.stringify(vendors));
-    window.dispatchEvent(new Event("vendorsUpdated"));
-  }
 }

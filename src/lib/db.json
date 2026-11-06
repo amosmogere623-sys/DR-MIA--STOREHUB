@@ -1,0 +1,11 @@
+{
+  "users": {},
+  "vendors": [],
+  "products": [],
+  "orders": [],
+  "treasury": {
+    "commissionBalance": 0,
+    "totalWithdrawn": 0,
+    "adminMpesaNumber": "0711 000 999"
+  }
+}

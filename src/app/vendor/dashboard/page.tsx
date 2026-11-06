@@ -11,6 +11,7 @@ import {
   releaseEscrowWithKey,
   boostProductWithTokens,
   vendorMarkOrderPickedUp,
+  syncAllFromServer,
 } from "../../../lib/data";
 import { Product, Vendor, Order } from "../../../types";
 import { useAuth } from "../../../context/AuthContext";
@@ -85,7 +86,16 @@ export default function VendorDashboardPage() {
   const refreshData = () => {
     const vendors = getStoredVendors();
     let currentV: Vendor | undefined;
-    if (currentUser?.role === "vendor") {
+
+    // Check localStorage current_vendor
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem("current_vendor");
+        if (stored) currentV = JSON.parse(stored);
+      } catch (e) {}
+    }
+
+    if (!currentV && currentUser?.role === "vendor") {
       currentV = vendors.find((v) => v.id === currentUser.id || v.email === currentUser.email);
     }
     const target = currentV || vendors[0];
@@ -95,14 +105,23 @@ export default function VendorDashboardPage() {
   };
 
   useEffect(() => {
+    syncAllFromServer();
     refreshData();
-    window.addEventListener("ordersUpdated", refreshData);
-    window.addEventListener("vendorsUpdated", refreshData);
-    window.addEventListener("productsUpdated", refreshData);
+    const handleOrders = () => refreshData();
+    window.addEventListener("ordersUpdated", handleOrders);
+    window.addEventListener("vendorsUpdated", handleOrders);
+    window.addEventListener("productsUpdated", handleOrders);
+
+    // Auto-poll server every 4 seconds so orders and products sync across devices
+    const interval = setInterval(() => {
+      syncAllFromServer();
+    }, 4000);
+
     return () => {
-      window.removeEventListener("ordersUpdated", refreshData);
-      window.removeEventListener("vendorsUpdated", refreshData);
-      window.removeEventListener("productsUpdated", refreshData);
+      clearInterval(interval);
+      window.removeEventListener("ordersUpdated", handleOrders);
+      window.removeEventListener("vendorsUpdated", handleOrders);
+      window.removeEventListener("productsUpdated", handleOrders);
     };
   }, [currentUser]);
 
@@ -194,8 +213,30 @@ export default function VendorDashboardPage() {
     setNewImage("");
   };
 
+  if (!vendor) {
+    return (
+      <div className="container" style={{ padding: "4rem 0", maxWidth: "540px" }}>
+        <div className="panel" style={{ textAlign: "center", padding: "3rem 2rem" }}>
+          <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🏪</div>
+          <h2 style={{ fontSize: "1.45rem", fontWeight: 800 }}>Vendor Dashboard</h2>
+          <p style={{ color: "var(--text-muted)", marginTop: "8px", fontSize: "0.9rem" }}>
+            No registered vendor account active on this device. Please register your shop or log in with your vendor account to start posting products.
+          </p>
+          <div style={{ display: "flex", gap: "10px", justifyContent: "center", marginTop: "1.75rem", flexWrap: "wrap" }}>
+            <Link href="/vendor/register" className="btn-primary" style={{ padding: "10px 22px" }}>
+              Register My Shop
+            </Link>
+            <Link href="/vendor/login" className="btn-secondary" style={{ padding: "10px 22px" }}>
+              Vendor Log In
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const vendorProducts = products.filter(
-    (p) => !vendor || p.vendorId === vendor.id || p.vendorName === vendor.businessName
+    (p) => p.vendorId === vendor.id || p.vendorName === vendor.businessName
   );
 
   return (

@@ -123,35 +123,38 @@ export default function VendorRegisterPage() {
       createdAt: newVendor.joinedDate,
     };
 
-    setTimeout(() => {
-      // 1. Save vendor to vendors list
-      saveVendor(newVendor);
-      localStorage.setItem("current_vendor", JSON.stringify(newVendor));
+    // 1. Save vendor to vendors list (saves locally and to /api/vendors)
+    saveVendor(newVendor);
+    localStorage.setItem("current_vendor", JSON.stringify(newVendor));
 
-      // 2. Save user to registered users for future login
-      try {
-        const users = JSON.parse(localStorage.getItem("sokolink_users") || "{}");
-        users[vendorEmail.toLowerCase()] = {
-          profile: userProfile,
-          password: password,
-          vendorData: newVendor,
-        };
-        // Also index by phone for convenience
-        users[phone.trim().replace(/\s+/g, "")] = {
-          profile: userProfile,
-          password: password,
-          vendorData: newVendor,
-        };
-        localStorage.setItem("sokolink_users", JSON.stringify(users));
-      } catch (err) {
-        console.error(err);
-      }
+    // 2. Register user to server and local storage
+    fetch("/api/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: vendorEmail,
+        password,
+        profile: userProfile,
+        vendorData: newVendor,
+      }),
+    }).catch((e) => console.error("Error saving user to server:", e));
 
-      // 3. Log user in via AuthContext
-      loginAs(userProfile);
-      setIsSubmitting(false);
-      router.push("/vendor/dashboard");
-    }, 600);
+    try {
+      const users = JSON.parse(localStorage.getItem("sokolink_users") || "{}");
+      users[vendorEmail.toLowerCase()] = {
+        profile: userProfile,
+        password: password,
+        vendorData: newVendor,
+      };
+      localStorage.setItem("sokolink_users", JSON.stringify(users));
+    } catch (err) {
+      console.error(err);
+    }
+
+    // 3. Log user in via AuthContext
+    loginAs(userProfile);
+    setIsSubmitting(false);
+    router.push("/vendor/dashboard");
   };
 
   return (

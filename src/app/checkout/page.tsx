@@ -103,7 +103,7 @@ export default function CheckoutPage() {
 
     const newOrder: Order = {
       id: orderId,
-      buyerId: currentUser?.id || "buyer23",
+      buyerId: currentUser?.id || `buyer-${Date.now()}`,
       buyerName,
       buyerPhone,
       buyerEmail,
@@ -121,7 +121,7 @@ export default function CheckoutPage() {
         quantity: item.quantity,
         vendorId: item.product.vendorId,
         vendorName: item.product.vendorName,
-        vendorPhone: "0712 998 877",
+        vendorPhone: "—",
         vendorLocation: item.product.location,
         stallLocation: item.product.stallLocation,
       })),
@@ -143,6 +143,19 @@ export default function CheckoutPage() {
       setIsSubmitting(false);
       router.push(`/order-success/${orderId}`);
     }, 1000);
+
+    // Register buyer account on the server so admin can see them (if not already registered)
+    if (currentUser) {
+      fetch("/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: currentUser.email,
+          password: "__oauth__",
+          profile: currentUser,
+        }),
+      }).catch(() => {});
+    }
   };
 
   return (

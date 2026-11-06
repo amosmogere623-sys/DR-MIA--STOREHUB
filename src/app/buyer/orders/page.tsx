@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { getStoredOrders, buyerAcceptAndReleaseEscrow } from "../../../lib/data";
+import { getStoredOrders, buyerAcceptAndReleaseEscrow, syncAllFromServer } from "../../../lib/data";
 import { Order } from "../../../types";
 
 export default function BuyerOrdersPage() {
@@ -15,10 +15,15 @@ export default function BuyerOrdersPage() {
   };
 
   useEffect(() => {
+    syncAllFromServer();
     refreshOrders();
     const handleUpdate = () => refreshOrders();
     window.addEventListener("ordersUpdated", handleUpdate);
-    return () => window.removeEventListener("ordersUpdated", handleUpdate);
+    const interval = setInterval(() => { syncAllFromServer(); }, 5000);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("ordersUpdated", handleUpdate);
+    };
   }, []);
 
   const handleBuyerRelease = (order: Order) => {

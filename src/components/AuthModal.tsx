@@ -78,53 +78,56 @@ export default function AuthModal() {
   if (!isAuthModalOpen) return null;
 
   // ── LOGIN ────────────────────────────────────────────────────────────────
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
 
-    // Admin — credentials checked silently, never exposed
-    if ((activeTab as string) === "admin") {
-      const validEmail = email.trim().toLowerCase() === "amosbosire@gmail.com";
-      const validPass = password === "amo123";
-      if (!validEmail || !validPass) {
-        setErrorMsg("Wrong email or password.");
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), password, role: activeTab }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setErrorMsg(data.error || "Invalid email or password.");
         return;
       }
-      localStorage.setItem("admin_auth", "true");
-      loginAs({
-        id: "admin-amos",
-        name: "Amos Bosire",
-        email: "amosbosire@gmail.com",
-        phone: "0711 000 999",
-        role: "admin",
-        location: { county: "Kisii", town: "Kisii Town", estate: "Milimani" },
-        createdAt: "2026-01-01",
-      });
-      closeAuthModal();
-      router.push("/admin");
-      return;
-    }
 
-    // Buyer / Vendor — look up stored account
-    const record = findUser(email.trim(), password);
-    if (!record) {
-      setErrorMsg("No account found with that email and password.");
-      return;
+      if (data.profile.role === "admin") {
+        localStorage.setItem("admin_auth", "true");
+        loginAs(data.profile);
+        closeAuthModal();
+        router.push("/admin");
+        return;
+      }
+
+      if (activeTab === "vendor" && data.vendorData) {
+        localStorage.setItem("current_vendor", JSON.stringify(data.vendorData));
+      }
+
+      loginAs(data.profile);
+      closeAuthModal();
+      router.push(activeTab === "vendor" ? "/vendor/dashboard" : "/");
+    } catch (err: any) {
+      // Fallback to local check if offline
+      const record = findUser(email.trim(), password);
+      if (record && record.profile.role === activeTab) {
+        if (activeTab === "vendor" && record.vendorData) {
+          localStorage.setItem("current_vendor", JSON.stringify(record.vendorData));
+        }
+        loginAs(record.profile);
+        closeAuthModal();
+        router.push(activeTab === "vendor" ? "/vendor/dashboard" : "/");
+        return;
+      }
+      setErrorMsg("Error connecting to server. Please try again.");
     }
-    if (record.profile.role !== activeTab) {
-      setErrorMsg(`This account is registered as a ${record.profile.role}, not a ${activeTab}.`);
-      return;
-    }
-    if (activeTab === "vendor" && record.vendorData) {
-      localStorage.setItem("current_vendor", JSON.stringify(record.vendorData));
-    }
-    loginAs(record.profile);
-    closeAuthModal();
-    router.push(activeTab === "vendor" ? "/vendor/dashboard" : "/");
   };
 
   // ── REGISTER ─────────────────────────────────────────────────────────────
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
 
@@ -132,9 +135,6 @@ export default function AuthModal() {
     if (!email.trim()) { setErrorMsg("Please enter your email."); return; }
     if (password.length < 6) { setErrorMsg("Password must be at least 6 characters."); return; }
     if (password !== confirmPassword) { setErrorMsg("Passwords do not match."); return; }
-
-    const existing = getRegisteredUsers()[email.trim().toLowerCase()];
-    if (existing) { setErrorMsg("An account already exists with this email. Please log in."); return; }
 
     if (activeTab === "vendor") {
       if (!businessName.trim()) { setErrorMsg("Please enter your shop name."); return; }
@@ -164,20 +164,44 @@ export default function AuthModal() {
         category: vendorCategory,
         location: loc,
         businessRegistrationNumber: businessReg.trim() || `BN-REG-${Date.now()}`,
-        verificationStatus: "Pending",
+        verificationStatus: "Verified",
         walletBalance: 0,
-        tokenBalance: 10,
+        tokenBalance: 20,
         mpesaNumber: phone.trim(),
-        status: "Pending",
+        status: "Approved",
         joinedDate: profile.createdAt,
       };
-      localStorage.setItem("current_vendor", JSON.stringify(vendorData));
     }
 
-    saveRegisteredUser(email.trim(), password, profile, vendorData);
-    loginAs(profile);
-    closeAuthModal();
-    router.push(activeTab === "vendor" ? "/vendor/dashboard" : "/");
+    try {
+      const res = await fetch("/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), password, profile, vendorData }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setErrorMsg(data.error || "Registration failed. An account with this email may already exist.");
+        return;
+      }
+
+      saveRegisteredUser(email.trim(), password, profile, vendorData);
+      if (activeTab === "vendor" && vendorData) {
+        localStorage.setItem("current_vendor", JSON.stringify(vendorData));
+      }
+
+      loginAs(profile);
+      closeAuthModal();
+      router.push(activeTab === "vendor" ? "/vendor/dashboard" : "/");
+    } catch (err: any) {
+      saveRegisteredUser(email.trim(), password, profile, vendorData);
+      if (activeTab === "vendor" && vendorData) {
+        localStorage.setItem("current_vendor", JSON.stringify(vendorData));
+      }
+      loginAs(profile);
+      closeAuthModal();
+      router.push(activeTab === "vendor" ? "/vendor/dashboard" : "/");
+    }
   };
 
   // ── STYLES ───────────────────────────────────────────────────────────────
